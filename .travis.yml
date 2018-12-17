@@ -1,13 +1,21 @@
+os:
+  - osx
+  - linux
+language: generic
+sudo: required
+dist: trusty
 osx_image: xcode10.1
-language: swift
+  - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
 env:
   global:
+  - SWIFT_VERSION=4.2
   - FRAMEWORK_NAME=XMLCoder
 before_install:
 - gem install cocoapods --pre # Since Travis is not always on latest version
 - brew update
 - brew outdated carthage || brew upgrade carthage
 script:
+- swift test
 - pod lib lint
 - xcodebuild test -enableCodeCoverage YES -scheme XMLCoder
 before_deploy:
