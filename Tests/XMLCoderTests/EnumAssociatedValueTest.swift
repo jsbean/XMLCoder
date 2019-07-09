@@ -47,4 +47,21 @@ class EnumAssociatedValuesTest: XCTestCase {
         let expected = IntOrString.string("forty-two")
         XCTAssertEqual(result, expected)
     }
+    
+    func testIntOrStringArrayDecoding() throws {
+        let xml = """
+        <container>
+            <int>42</int>
+            <string>forty-two</string>
+            <int>43</int>
+        </container>
+        """
+        let result = try XMLDecoder().decode([IntOrString].self, from: xml.data(using: .utf8)!)
+        let expected: [IntOrString] = [
+            .int(42),
+            .string("forty-two"),
+            .int(43),
+        ]
+        XCTAssertEqual(result, expected)
+    }
 }
