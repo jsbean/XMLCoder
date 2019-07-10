@@ -348,7 +348,6 @@ open class XMLDecoder {
             shouldProcessNamespaces: shouldProcessNamespaces,
             trimValueWhitespaces: trimValueWhitespaces
         )
-
         let decoder = XMLDecoderImplementation(
             referencing: topLevel,
             options: options,
@@ -364,7 +363,6 @@ open class XMLDecoder {
         defer {
             _ = decoder.nodeDecodings.removeLast()
         }
-
         return try decoder.unbox(topLevel)
     }
 }

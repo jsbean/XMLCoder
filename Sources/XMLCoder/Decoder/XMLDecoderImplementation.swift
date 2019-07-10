@@ -74,7 +74,6 @@ class XMLDecoderImplementation: Decoder {
         keyedBy keyType: Key.Type
     ) throws -> KeyedDecodingContainer<Key> {
         let topContainer = try self.topContainer()
-
         switch topContainer {
         case _ where topContainer.isNull:
             throw DecodingError.valueNotFound(
@@ -139,8 +138,23 @@ class XMLDecoderImplementation: Decoder {
             return XMLUnkeyedDecodingContainer(referencing: self, wrapping: unkeyed)
         case let keyed as SharedBox<KeyedBox>:
             guard let firstKey = keyed.withShared({ $0.elements.keys.first }) else { fallthrough }
-
-            return XMLUnkeyedDecodingContainer(referencing: self, wrapping: SharedBox(keyed.withShared { $0.elements[firstKey] }))
+        
+            
+            let wrapped: SharedBox<UnkeyedBox> = SharedBox(
+                keyed.unboxed.elements.map {
+                    var storage = KeyedStorage<KeyedBox.Key,KeyedBox.Element>.init()
+                    storage.append($0.1, at: $0.0)
+                    return KeyedBox(elements: storage, attributes: [])
+                }
+            )
+            
+            let result = XMLUnkeyedDecodingContainer(
+                referencing: self,
+                wrapping: wrapped
+            )
+            return result
+            
+            
         default:
             throw DecodingError.typeMismatch(
                 at: codingPath,
@@ -373,6 +387,7 @@ extension XMLDecoderImplementation {
     }
 
     func unbox<T: Decodable>(_ box: Box) throws -> T {
+        
         let decoded: T?
         let type = T.self
 
@@ -397,7 +412,7 @@ extension XMLDecoderImplementation {
             defer {
                 storage.popContainer()
             }
-
+            
             do {
                 decoded = try type.init(from: self)
             } catch {

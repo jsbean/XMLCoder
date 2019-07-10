@@ -8,7 +8,7 @@
 import XCTest
 import XMLCoder
 
-enum IntOrString {
+private enum IntOrString {
     case int(Int)
     case string(String)
 }
@@ -51,16 +51,20 @@ class EnumAssociatedValuesTest: XCTestCase {
     func testIntOrStringArrayDecoding() throws {
         let xml = """
         <container>
-            <int>42</int>
-            <string>forty-two</string>
-            <int>43</int>
+            <int>1</int>
+            <string>two</string>
+            <string>three</string>
+            <int>4</int>
+            <int>5</int>
         </container>
         """
         let result = try XMLDecoder().decode([IntOrString].self, from: xml.data(using: .utf8)!)
         let expected: [IntOrString] = [
-            .int(42),
-            .string("forty-two"),
-            .int(43),
+            .int(1),
+            .string("two"),
+            .string("three"),
+            .int(4),
+            .int(5),
         ]
         XCTAssertEqual(result, expected)
     }

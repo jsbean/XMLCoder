@@ -68,8 +68,8 @@ struct XMLCoderElement: Equatable {
         if elements.isEmpty, let value = value {
             elements.append(StringBox(value), at: "value")
         }
+        
         let keyedBox = KeyedBox(elements: elements, attributes: attributes)
-
         return keyedBox
     }
 

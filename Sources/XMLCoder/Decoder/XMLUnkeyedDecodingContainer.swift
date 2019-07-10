@@ -37,7 +37,7 @@ struct XMLUnkeyedDecodingContainer: UnkeyedDecodingContainer {
 
     public var count: Int? {
         return container.withShared { unkeyedBox in
-            unkeyedBox.count
+            return unkeyedBox.count
         }
     }
 
@@ -67,7 +67,7 @@ struct XMLUnkeyedDecodingContainer: UnkeyedDecodingContainer {
 
     public mutating func decode<T: Decodable>(_ type: T.Type) throws -> T {
         return try decode(type) { decoder, box in
-            try decoder.unbox(box)
+            return try decoder.unbox(box)
         }
     }
 
@@ -98,12 +98,13 @@ struct XMLUnkeyedDecodingContainer: UnkeyedDecodingContainer {
         decoder.codingPath.append(XMLKey(index: currentIndex))
         defer { self.decoder.codingPath.removeLast() }
 
-        let box = container.withShared { unkeyedBox in
-            unkeyedBox[self.currentIndex]
+        let box = container.withShared { unkeyedBox -> Box in
+            let result: Box = unkeyedBox[self.currentIndex]
+            return result
         }
 
         let value = try decode(decoder, box)
-
+        
         defer { currentIndex += 1 }
 
         if value == nil, let type = type as? AnyOptional.Type,
