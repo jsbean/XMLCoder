@@ -154,7 +154,6 @@ class XMLDecoderImplementation: Decoder {
             
             guard let firstKey = keyed.withShared({ $0.elements.keys.first }) else { fallthrough }
             return XMLUnkeyedDecodingContainer(referencing: self, wrapping: SharedBox(keyed.withShared { $0.elements[firstKey] }))
-            
         default:
             throw DecodingError.typeMismatch(
                 at: codingPath,
