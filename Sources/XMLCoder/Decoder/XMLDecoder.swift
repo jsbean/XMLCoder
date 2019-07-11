@@ -348,6 +348,7 @@ open class XMLDecoder {
             shouldProcessNamespaces: shouldProcessNamespaces,
             trimValueWhitespaces: trimValueWhitespaces
         )
+
         let decoder = XMLDecoderImplementation(
             referencing: topLevel,
             options: options,
