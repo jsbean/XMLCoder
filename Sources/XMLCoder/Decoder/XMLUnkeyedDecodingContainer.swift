@@ -37,7 +37,7 @@ struct XMLUnkeyedDecodingContainer: UnkeyedDecodingContainer {
 
     public var count: Int? {
         return container.withShared { unkeyedBox in
-            return unkeyedBox.count
+            unkeyedBox.count
         }
     }
 
