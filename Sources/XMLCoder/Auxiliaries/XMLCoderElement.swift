@@ -70,6 +70,7 @@ struct XMLCoderElement: Equatable {
         }
         
         let keyedBox = KeyedBox(elements: elements, attributes: attributes)
+        
         return keyedBox
     }
 
