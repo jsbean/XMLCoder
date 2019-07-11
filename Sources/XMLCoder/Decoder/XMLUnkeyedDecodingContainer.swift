@@ -100,22 +100,11 @@ struct XMLUnkeyedDecodingContainer: UnkeyedDecodingContainer {
         defer { self.decoder.codingPath.removeLast() }
         
         let box = container.withShared { unkeyedBox -> Box in unkeyedBox[self.currentIndex] }
-        
-        let value: T?
-        
-        do {
-            if let v = try decode(decoder,box) {
-                value = v
-            } else {
-                if let keyed = box as? KeyedBox, keyed.elements.count == 1 {
-                    do {
-                        value = try decode(decoder, keyed.elements[keyed.elements.keys[0]])
-                    } catch {
-                        value = nil
-                    }
-                } else {
-                    value = nil
-                }
+
+        var value = try decode(decoder,box)
+        if value == nil {
+            if let keyed = box as? KeyedBox, keyed.elements.count == 1 {
+                value = try decode(decoder, keyed.elements[keyed.elements.keys[0]])
             }
         }
 
