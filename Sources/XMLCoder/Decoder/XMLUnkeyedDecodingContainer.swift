@@ -67,7 +67,7 @@ struct XMLUnkeyedDecodingContainer: UnkeyedDecodingContainer {
 
     public mutating func decode<T: Decodable>(_ type: T.Type) throws -> T {
         return try decode(type) { decoder, box in
-            return try decoder.unbox(box)
+            try decoder.unbox(box)
         }
     }
 
