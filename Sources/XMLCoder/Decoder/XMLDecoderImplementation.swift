@@ -74,6 +74,7 @@ class XMLDecoderImplementation: Decoder {
         keyedBy keyType: Key.Type
     ) throws -> KeyedDecodingContainer<Key> {
         let topContainer = try self.topContainer()
+        
         switch topContainer {
         case _ where topContainer.isNull:
             throw DecodingError.valueNotFound(
