@@ -33,7 +33,6 @@ struct XMLDecodingStorage {
     }
 
     mutating func push(container: Box) {
-        
         if let keyedBox = container as? KeyedBox {
             containers.append(SharedBox(keyedBox))
         } else if let unkeyedBox = container as? UnkeyedBox {
