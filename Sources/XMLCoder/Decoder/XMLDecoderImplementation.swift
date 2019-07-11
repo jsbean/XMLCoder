@@ -447,15 +447,3 @@ extension XMLDecoderImplementation {
         return result
     }
 }
-
-extension RandomAccessCollection where Index == Int, Element: Equatable {
-    func isHomogeneous() -> Bool {
-        guard let first = first else { return true }
-        for el in self[1...] {
-            if first != el {
-                return false
-            }
-        }
-        return true
-    }
-}
