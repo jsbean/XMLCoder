@@ -387,7 +387,6 @@ extension XMLDecoderImplementation {
     }
 
     func unbox<T: Decodable>(_ box: Box) throws -> T {
-        
         let decoded: T?
         let type = T.self
 
@@ -412,7 +411,6 @@ extension XMLDecoderImplementation {
             defer {
                 storage.popContainer()
             }
-            
             do {
                 decoded = try type.init(from: self)
             } catch {
