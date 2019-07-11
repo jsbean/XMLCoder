@@ -75,6 +75,7 @@ struct XMLUnkeyedDecodingContainer: UnkeyedDecodingContainer {
         _ type: T.Type,
         decode: (XMLDecoderImplementation, Box) throws -> T?
     ) throws -> T {
+        
         guard let strategy = self.decoder.nodeDecodings.last else {
             preconditionFailure("Attempt to access node decoding strategy from empty stack.")
         }
@@ -97,14 +98,27 @@ struct XMLUnkeyedDecodingContainer: UnkeyedDecodingContainer {
 
         decoder.codingPath.append(XMLKey(index: currentIndex))
         defer { self.decoder.codingPath.removeLast() }
-
-        let box = container.withShared { unkeyedBox -> Box in
-            let result: Box = unkeyedBox[self.currentIndex]
-            return result
+        
+        let box = container.withShared { unkeyedBox -> Box in unkeyedBox[self.currentIndex] }
+        
+        let value: T?
+        
+        do {
+            if let v = try decode(decoder,box) {
+                value = v
+            } else {
+                if let keyed = box as? KeyedBox, keyed.elements.count == 1 {
+                    do {
+                        value = try decode(decoder, keyed.elements[keyed.elements.keys[0]])
+                    } catch {
+                        value = nil
+                    }
+                } else {
+                    value = nil
+                }
+            }
         }
 
-        let value = try decode(decoder, box)
-        
         defer { currentIndex += 1 }
 
         if value == nil, let type = type as? AnyOptional.Type,

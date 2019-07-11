@@ -137,25 +137,35 @@ class XMLDecoderImplementation: Decoder {
         case let unkeyed as SharedBox<UnkeyedBox>:
             return XMLUnkeyedDecodingContainer(referencing: self, wrapping: unkeyed)
         case let keyed as SharedBox<KeyedBox>:
+//            let all = keyed.withShared({ $0.elements.allSatisfy{ $0.1 is StringBox }})
+//            // Check for array of enums with associated values
+//            if keyed.unboxed.elements.allSatisfy({ $0.1 is StringBox }) {
+//                // Perform some acrobatics
+//                let wrapped: SharedBox<UnkeyedBox> = SharedBox(
+//                    keyed.unboxed.elements.map {
+//                        var storage = KeyedStorage<KeyedBox.Key,KeyedBox.Element>.init()
+//                        storage.append($0.1, at: $0.0)
+//                        return KeyedBox(elements: storage, attributes: [])
+//                    }
+//                )
+//                return XMLUnkeyedDecodingContainer(referencing: self, wrapping: wrapped)
+//            }
+            
+            // In order to decode enums with associated values down-the-line, don't get rid of
+            // elements which don't have the same key as the element in the array.
+            if keyed.withShared({ $0.elements.allSatisfy { $0.1 is StringBox }}) {
+                let wrapped: SharedBox<UnkeyedBox> = SharedBox(
+                    keyed.unboxed.elements.map {
+                        var storage = KeyedStorage<KeyedBox.Key,KeyedBox.Element>.init()
+                        storage.append($0.1, at: $0.0)
+                        return KeyedBox(elements: storage, attributes: [])
+                    }
+                )
+                return XMLUnkeyedDecodingContainer(referencing: self, wrapping: wrapped)
+            }
+            
             guard let firstKey = keyed.withShared({ $0.elements.keys.first }) else { fallthrough }
-            return XMLUnkeyedDecodingContainer(
-                referencing: self,
-                wrapping: SharedBox(keyed.withShared { $0.elements[firstKey] })
-            )
-//
-//            let wrapped: SharedBox<UnkeyedBox> = SharedBox(
-//                keyed.unboxed.elements.map {
-//                    var storage = KeyedStorage<KeyedBox.Key,KeyedBox.Element>.init()
-//                    storage.append($0.1, at: $0.0)
-//                    return KeyedBox(elements: storage, attributes: [])
-//                }
-//            )
-//
-//            let result = XMLUnkeyedDecodingContainer(
-//                referencing: self,
-//                wrapping: wrapped
-//            )
-//            return result
+            return XMLUnkeyedDecodingContainer(referencing: self, wrapping: SharedBox(keyed.withShared { $0.elements[firstKey] }))
             
         default:
             throw DecodingError.typeMismatch(
@@ -435,5 +445,17 @@ extension XMLDecoderImplementation {
         }
 
         return result
+    }
+}
+
+extension RandomAccessCollection where Index == Int, Element: Equatable {
+    func isHomogeneous() -> Bool {
+        guard let first = first else { return true }
+        for el in self[1...] {
+            if first != el {
+                return false
+            }
+        }
+        return true
     }
 }

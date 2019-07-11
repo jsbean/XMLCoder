@@ -52,6 +52,7 @@ struct XMLCoderElement: Equatable {
     }
 
     func transformToBoxTree() -> KeyedBox {
+        
         let attributes = KeyedStorage(self.attributes.map { attribute in
             (key: attribute.key, value: StringBox(attribute.value) as SimpleBox)
         })
