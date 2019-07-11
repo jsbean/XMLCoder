@@ -18,13 +18,12 @@ class XMLStackParser: NSObject {
         super.init()
     }
 
-    #warning("Consider returning `Box` instead of `KeyedBox`")
     static func parse(
         with data: Data,
         errorContextLength length: UInt,
         shouldProcessNamespaces: Bool,
         trimValueWhitespaces: Bool
-    ) throws -> KeyedBox {
+    ) throws -> Box {
         let parser = XMLStackParser(trimValueWhitespaces: trimValueWhitespaces)
 
         let node = try parser.parse(

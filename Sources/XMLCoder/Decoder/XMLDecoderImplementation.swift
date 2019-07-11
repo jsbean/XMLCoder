@@ -138,22 +138,24 @@ class XMLDecoderImplementation: Decoder {
             return XMLUnkeyedDecodingContainer(referencing: self, wrapping: unkeyed)
         case let keyed as SharedBox<KeyedBox>:
             guard let firstKey = keyed.withShared({ $0.elements.keys.first }) else { fallthrough }
-        
-            
-            let wrapped: SharedBox<UnkeyedBox> = SharedBox(
-                keyed.unboxed.elements.map {
-                    var storage = KeyedStorage<KeyedBox.Key,KeyedBox.Element>.init()
-                    storage.append($0.1, at: $0.0)
-                    return KeyedBox(elements: storage, attributes: [])
-                }
-            )
-            
-            let result = XMLUnkeyedDecodingContainer(
+            return XMLUnkeyedDecodingContainer(
                 referencing: self,
-                wrapping: wrapped
+                wrapping: SharedBox(keyed.withShared { $0.elements[firstKey] })
             )
-            return result
-            
+//
+//            let wrapped: SharedBox<UnkeyedBox> = SharedBox(
+//                keyed.unboxed.elements.map {
+//                    var storage = KeyedStorage<KeyedBox.Key,KeyedBox.Element>.init()
+//                    storage.append($0.1, at: $0.0)
+//                    return KeyedBox(elements: storage, attributes: [])
+//                }
+//            )
+//
+//            let result = XMLUnkeyedDecodingContainer(
+//                referencing: self,
+//                wrapping: wrapped
+//            )
+//            return result
             
         default:
             throw DecodingError.typeMismatch(
