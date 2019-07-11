@@ -364,7 +364,7 @@ open class XMLDecoder {
         defer {
             _ = decoder.nodeDecodings.removeLast()
         }
-        
+
         return try decoder.unbox(topLevel)
     }
 }
