@@ -46,6 +46,18 @@ final class NestingTests: XCTestCase {
         "second": [1, 2, 3],
     ]
 
+    let xmlUnkeyedWithinKeyed =
+        """
+        <element>
+            <first>1</first>
+            <first>2</first>
+            <first>3</first>
+            <second>1</second>
+            <second>2</second>
+            <second>3</second>
+        </element>
+        """
+
     let keyedWithinUnkeyed: [[String: Int]] = [
         ["first": 1],
         ["second": 2],
@@ -62,7 +74,8 @@ final class NestingTests: XCTestCase {
     }
 
     func testEncodeUnkeyedWithinKeyed() throws {
-        XCTAssertNoThrow(try encoder.encode(unkeyedWithinKeyed, withRootKey: "element"))
+        let encoded = try encoder.encode(unkeyedWithinKeyed, withRootKey: "element")
+        XCTAssertEqual(String(data: encoded, encoding: .utf8), xmlUnkeyedWithinKeyed)
     }
 
     func testEncodeKeyedWithinUnkeyed() throws {
@@ -82,18 +95,9 @@ final class NestingTests: XCTestCase {
     }
 
     func testDecodeUnkeyedWithinKeyed() throws {
-        let xml =
-            """
-            <element>
-                <first>1</first>
-                <first>2</first>
-                <first>3</first>
-                <second>1</second>
-                <second>2</second>
-                <second>3</second>
-            </element>
-            """
-        let encoded = xml.data(using: .utf8)!
+        let encoded = xmlUnkeyedWithinKeyed.data(using: .utf8)!
+        let expected = ["first": [1, 2, 3], "second": [1, 2, 3]]
+        let decoded = try decoder.decode([String: [Int]].self, from: encoded)
 
         XCTAssertNoThrow(try decoder.decode(type(of: unkeyedWithinKeyed), from: encoded))
     }
