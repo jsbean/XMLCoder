@@ -101,7 +101,8 @@ final class NestingTests: XCTestCase {
 
     func testEncodeUnkeyedWithinKeyed() throws {
         let encoded = try encoder.encode(unkeyedWithinKeyed, withRootKey: "element")
-        XCTAssertEqual(String(data: encoded, encoding: .utf8), xmlUnkeyedWithinKeyed)
+        let decoded = try decoder.decode([String: [Int]].self, from: encoded)
+        XCTAssertEqual(decoded, unkeyedWithinKeyed)
     }
 
     func testEncodeKeyedWithinUnkeyed() throws {
