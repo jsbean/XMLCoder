@@ -8,11 +8,11 @@
 import XCTest
 import XMLCoder
 
-private struct IntWrapper: Decodable, Equatable {
+private struct IntWrapper: Codable, Equatable {
     let wrapped: Int
 }
 
-private struct StringWrapper: Decodable, Equatable {
+private struct StringWrapper: Codable, Equatable {
     let wrapped: String
 }
 
@@ -33,6 +33,18 @@ extension IntOrStringWrapper: Decodable {
             self = .int(try container.decode(IntWrapper.self, forKey: .int))
         } catch {
             self = .string(try container.decode(StringWrapper.self, forKey: .string))
+        }
+    }
+}
+
+extension IntOrStringWrapper: Encodable {
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case let .int(value):
+            try container.encode(value, forKey: .int)
+        case let .string(value):
+            try container.encode(value, forKey: .string)
         }
     }
 }
