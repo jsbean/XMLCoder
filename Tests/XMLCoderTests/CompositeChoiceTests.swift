@@ -65,42 +65,42 @@ class EnumAssociatedValueTestComposite: XCTestCase {
         encoder.outputFormatting = [.prettyPrinted]
         return encoder
     }
-    
+
     private let simpleString = IntOrStringWrapper.string(StringWrapper(wrapped: "A Word About Woke Times"))
-    
+
     private let xmlSimpleString = """
-        <container>
-            <string>
-                <wrapped>A Word About Woke Times</wrapped>
-            </string>
-        </container>
-        """
-    
+    <container>
+        <string>
+            <wrapped>A Word About Woke Times</wrapped>
+        </string>
+    </container>
+    """
+
     private let simpleArray: [IntOrStringWrapper] = [
         .string(StringWrapper(wrapped: "A Word About Woke Times")),
         .int(IntWrapper(wrapped: 9000)),
         .string(StringWrapper(wrapped: "A Word About Woke Tomes")),
     ]
-    
+
     private let xmlSimpleArray = """
-        <container>
-            <string>
-                <wrapped>A Word About Woke Times</wrapped>
-            </string>
-            <int>
-                <wrapped>9000</wrapped>
-            </int>
-            <string>
-                <wrapped>A Word About Woke Tomes</wrapped>
-            </string>
-        </container>
-        """
-    
+    <container>
+        <string>
+            <wrapped>A Word About Woke Times</wrapped>
+        </string>
+        <int>
+            <wrapped>9000</wrapped>
+        </int>
+        <string>
+            <wrapped>A Word About Woke Tomes</wrapped>
+        </string>
+    </container>
+    """
+
     func testDecodeIntOrStringWrapper() throws {
         let decoded = try XMLDecoder().decode(IntOrStringWrapper.self, from: xmlSimpleString.data(using: .utf8)!)
         XCTAssertEqual(decoded, simpleString)
     }
-    
+
     func testEncodeIntOrStringWrapper() throws {
         let encoded = try encoder.encode(simpleString, withRootKey: "container")
         XCTAssertEqual(String(data: encoded, encoding: .utf8), xmlSimpleString)
@@ -110,7 +110,7 @@ class EnumAssociatedValueTestComposite: XCTestCase {
         let decoded = try XMLDecoder().decode([IntOrStringWrapper].self, from: xmlSimpleArray.data(using: .utf8)!)
         XCTAssertEqual(decoded, simpleArray)
     }
-    
+
     func testEncodeArrayOfIntOrStringWrappers() throws {
         let encoded = try encoder.encode(simpleArray, withRootKey: "container")
         XCTAssertEqual(String(data: encoded, encoding: .utf8), xmlSimpleArray)
