@@ -38,21 +38,29 @@ extension IntOrStringWrapper: Decodable {
 }
 
 class EnumAssociatedValueTestComposite: XCTestCase {
-    func testIntOrStringWrapper() throws {
-        let xml = """
+    var encoder: XMLEncoder {
+        let encoder = XMLEncoder()
+        encoder.outputFormatting = [.prettyPrinted]
+        return encoder
+    }
+    
+    private let simpleString = IntOrStringWrapper.string(StringWrapper(wrapped: "A Word About Woke Times"))
+    
+    private let xmlSimpleString = """
         <container>
             <string>
                 <wrapped>A Word About Woke Times</wrapped>
             </string>
         </container>
         """
-        let result = try XMLDecoder().decode(IntOrStringWrapper.self, from: xml.data(using: .utf8)!)
-        let expected = IntOrStringWrapper.string(StringWrapper(wrapped: "A Word About Woke Times"))
-        XCTAssertEqual(result, expected)
-    }
-
-    func testArrayOfIntOrStringWrappers() throws {
-        let xml = """
+    
+    private let simpleArray: [IntOrStringWrapper] = [
+        .string(StringWrapper(wrapped: "A Word About Woke Times")),
+        .int(IntWrapper(wrapped: 9000)),
+        .string(StringWrapper(wrapped: "A Word About Woke Tomes")),
+    ]
+    
+    private let xmlSimpleArray = """
         <container>
             <string>
                 <wrapped>A Word About Woke Times</wrapped>
@@ -65,12 +73,24 @@ class EnumAssociatedValueTestComposite: XCTestCase {
             </string>
         </container>
         """
-        let result = try XMLDecoder().decode([IntOrStringWrapper].self, from: xml.data(using: .utf8)!)
-        let expected: [IntOrStringWrapper] = [
-            .string(StringWrapper(wrapped: "A Word About Woke Times")),
-            .int(IntWrapper(wrapped: 9000)),
-            .string(StringWrapper(wrapped: "A Word About Woke Tomes")),
-        ]
-        XCTAssertEqual(result, expected)
+    
+    func testDecodeIntOrStringWrapper() throws {
+        let decoded = try XMLDecoder().decode(IntOrStringWrapper.self, from: xmlSimpleString.data(using: .utf8)!)
+        XCTAssertEqual(decoded, simpleString)
+    }
+    
+    func testEncodeIntOrStringWrapper() throws {
+        let encoded = try encoder.encode(simpleString, withRootKey: "container")
+        XCTAssertEqual(String(data: encoded, encoding: .utf8), xmlSimpleString)
+    }
+
+    func testDecodeArrayOfIntOrStringWrappers() throws {
+        let decoded = try XMLDecoder().decode([IntOrStringWrapper].self, from: xmlSimpleArray.data(using: .utf8)!)
+        XCTAssertEqual(decoded, simpleArray)
+    }
+    
+    func testEncodeArrayOfIntOrStringWrappers() throws {
+        let encoded = try encoder.encode(simpleArray, withRootKey: "container")
+        XCTAssertEqual(String(data: encoded, encoding: .utf8), xmlSimpleArray)
     }
 }
