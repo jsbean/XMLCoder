@@ -337,7 +337,7 @@ open class XMLEncoder {
         if let keyedBox = topLevel as? KeyedBox {
             elementOrNone = XMLCoderElement(key: rootKey, box: keyedBox)
         } else if let unkeyedBox = topLevel as? UnkeyedBox {
-            if T.self is XMLChoiceEncodable.Type {
+            if T.self is ArrayOfXMLChoiceEncodable.Type {
                 elementOrNone = XMLCoderElement.containsChoice(key: rootKey, box: unkeyedBox)
             } else {
                 elementOrNone = XMLCoderElement(key: rootKey, box: unkeyedBox)
