@@ -54,23 +54,19 @@ struct XMLCoderElement: Equatable {
     func transformToBoxTree() -> Box {
         if let value = value, self.attributes.isEmpty, self.elements.isEmpty {
             return SingleElementBox(key: key, element: StringBox(value))
-        } else {
-            let attributes = KeyedStorage(self.attributes.map { attribute in
-                (key: attribute.key, value: StringBox(attribute.value) as SimpleBox)
-            })
-            let storage = KeyedStorage<String, Box>()
-            var elements = self.elements.reduce(storage) { $0.merge(element: $1) }
-
-            // Handle attributed unkeyed value <foo attr="bar">zap</foo>
-            // Value should be zap. Detect only when no other elements exist
-            if elements.isEmpty, let value = value {
-                elements.append(StringBox(value), at: "value")
-            }
-            let keyedBox = KeyedBox(elements: elements, attributes: attributes)
-
-            return keyedBox
         }
+        let attributes = KeyedStorage(self.attributes.map { attribute in
+            (key: attribute.key, value: StringBox(attribute.value) as SimpleBox)
+        })
+        let storage = KeyedStorage<String, Box>()
+        var elements = self.elements.reduce(storage) { $0.merge(element: $1) }
 
+        // Handle attributed unkeyed value <foo attr="bar">zap</foo>
+        // Value should be zap. Detect only when no other elements exist
+        if elements.isEmpty, let value = value {
+            elements.append(StringBox(value), at: "value")
+        }
+        return KeyedBox(elements: elements, attributes: attributes)
     }
 
     func toXMLString(with header: XMLHeader? = nil,
