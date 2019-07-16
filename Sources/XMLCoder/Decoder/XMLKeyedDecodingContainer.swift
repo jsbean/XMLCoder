@@ -276,12 +276,6 @@ extension XMLKeyedDecodingContainer {
                 }
             }
 
-        #warning("Handle empty structs / enums")
-//        // Handle empty structs / enums
-//        if elements.count == 1 && elements[0].isNull {
-//            return try type.init(from: decoder)
-//        }
-
         let attributes = container.withShared { keyedBox in
             keyedBox.attributes[key.stringValue]
         }
