@@ -32,7 +32,7 @@ private struct Properties: Codable, Equatable {
     let title: String
 }
 
-private struct Break: Codable, Equatable { }
+private struct Break: Equatable { }
 
 extension Container: Codable {
     enum CodingKeys: String, CodingKey {
@@ -60,10 +60,10 @@ extension Entry: XMLChoiceCodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         do {
             self = .run(try container.decode(Run.self, forKey: .run))
-        } catch DecodingError.keyNotFound {
+        } catch {
             do {
                 self = .properties(try container.decode(Properties.self, forKey: .properties))
-            } catch DecodingError.keyNotFound {
+            } catch {
                 self = .br(try container.decode(Break.self, forKey: .br))
             }
         }
@@ -82,10 +82,12 @@ extension Entry: XMLChoiceCodable {
     }
 }
 
+extension Break: Codable {}
+
 class NestedChoiceTests: XCTestCase {
 
     func testBreakDecoding() throws {
-        let xml = "<br></br>"
+        let xml = "<br />"
         let result = try XMLDecoder().decode(Break.self, from: xml.data(using: .utf8)!)
         let expected = Break()
         XCTAssertEqual(result, expected)
@@ -143,45 +145,58 @@ class NestedChoiceTests: XCTestCase {
         XCTAssertEqual(result, expected)
     }
 
+    func testBreakAsEntryDecoding() throws {
+        let xml = """
+        <entry>
+            <br />
+        </entry>
+        """
+        let result = try XMLDecoder().decode(Entry.self, from: xml.data(using: .utf8)!)
+        let expected = Entry.br(Break())
+        XCTAssertEqual(result, expected)
+    }
+
     func testEntriesDecoding() throws {
         let xml = """
-         <entries>
-             <run>
-                 <id>1518</id>
-                 <text>I am answering it again.</text>
-             </run>
-             <properties>
-                 <id>431</id>
-                 <title>A Word About Wake Times</title>
-             </properties>
-         </entries>
-         """
+        <entries>
+            <run>
+                <id>1518</id>
+                <text>I am answering it again.</text>
+            </run>
+            <properties>
+                <id>431</id>
+                <title>A Word About Wake Times</title>
+            </properties>
+        </entries>
+        """
         let result = try XMLDecoder().decode([Entry].self, from: xml.data(using: .utf8)!)
         let expected: [Entry] = [
             .run(Run(id: 1518, text: "I am answering it again.")),
-            .properties(Properties(id: 431, title: "A Word About Wake Times"))
+            .properties(Properties(id: 431, title: "A Word About Wake Times")),
         ]
         XCTAssertEqual(result, expected)
     }
 
     func testParagraphDecoding() throws {
         let xml = """
-         <p>
-             <run>
-                 <id>1518</id>
-                 <text>I am answering it again.</text>
-             </run>
-             <properties>
-                 <id>431</id>
-                 <title>A Word About Wake Times</title>
-             </properties>
-         </p>
-         """
+        <p>
+            <run>
+                <id>1518</id>
+                <text>I am answering it again.</text>
+            </run>
+            <br />
+            <properties>
+                <id>431</id>
+                <title>A Word About Wake Times</title>
+            </properties>
+        </p>
+        """
         let result = try XMLDecoder().decode(Paragraph.self, from: xml.data(using: .utf8)!)
         let expected = Paragraph(
             entries: [
                 .run(Run(id: 1518, text: "I am answering it again.")),
-                .properties(Properties(id: 431, title: "A Word About Wake Times"))
+                .br(Break()),
+                .properties(Properties(id: 431, title: "A Word About Wake Times")),
             ]
         )
         XCTAssertEqual(result, expected)
@@ -189,25 +204,26 @@ class NestedChoiceTests: XCTestCase {
 
     func testNestedEnums() throws {
         let xml = """
-         <container>
-             <p>
-                 <run>
-                     <id>1518</id>
-                     <text>I am answering it again.</text>
-                 </run>
-                 <properties>
-                     <id>431</id>
-                     <title>A Word About Wake Times</title>
-                 </properties>
-             </p>
-             <p>
-                 <run>
-                     <id>1519</id>
-                     <text>I am answering it again.</text>
-                 </run>
-             </p>
-         </container>
-         """
+        <container>
+            <p>
+                <run>
+                    <id>1518</id>
+                    <text>I am answering it again.</text>
+                </run>
+                <properties>
+                    <id>431</id>
+                    <title>A Word About Wake Times</title>
+                </properties>
+            </p>
+            <p>
+                <run>
+                    <id>1519</id>
+                    <text>I am answering it again.</text>
+                </run>
+                <br />
+            </p>
+        </container>
+        """
         let result = try XMLDecoder().decode(Container.self, from: xml.data(using: .utf8)!)
         let expected = Container(
             paragraphs: [
@@ -220,6 +236,7 @@ class NestedChoiceTests: XCTestCase {
                 Paragraph(
                     entries: [
                         .run(Run(id: 1519, text: "I am answering it again.")),
+                        .br(Break())
                     ]
                 )
             ]
@@ -239,11 +256,13 @@ class NestedChoiceTests: XCTestCase {
                 Paragraph(
                     entries: [
                         .run(Run(id: 1519, text: "I am answering it again.")),
+                        .br(Break())
                     ]
                 )
             ]
         )
         let encoded = try XMLEncoder().encode(original, withRootKey: "container")
+        print(String(data: encoded, encoding: .utf8)!)
         let decoded = try XMLDecoder().decode(Container.self, from: encoded)
         XCTAssertEqual(decoded, original)
     }

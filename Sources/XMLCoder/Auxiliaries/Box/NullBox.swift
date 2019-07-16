@@ -18,12 +18,7 @@ extension NullBox: Box {
 }
 
 extension NullBox: SimpleBox {}
-
-extension NullBox: Equatable {
-    static func ==(_: NullBox, _: NullBox) -> Bool {
-        return true
-    }
-}
+extension NullBox: Equatable { }
 
 extension NullBox: CustomStringConvertible {
     var description: String {

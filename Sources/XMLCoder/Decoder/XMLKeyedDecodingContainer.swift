@@ -121,21 +121,20 @@ struct XMLKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol {
     public func decode<T: Decodable>(
         _ type: T.Type, forKey key: Key
     ) throws -> T {
+        print("decode: \(type) for key: \(key) ------------------------------------")
         let attributeFound = container.withShared { keyedBox in
             !keyedBox.attributes[key.stringValue].isEmpty
         }
-
         let elementFound = container.withShared { keyedBox in
             !keyedBox.elements[key.stringValue].isEmpty || keyedBox.value != nil
         }
-
         if let type = type as? AnySequence.Type,
             !attributeFound,
             !elementFound,
             let result = type.init() as? T {
             return result
         }
-
+        print("proceeding onto decoding concrete: \(type) ...")
         return try decodeConcrete(type, forKey: key)
     }
 
@@ -279,6 +278,12 @@ extension XMLKeyedDecodingContainer {
                 }
             }
 
+        #warning("Handle empty structs / enums")
+//        // Handle empty structs / enums
+//        if elements.count == 1 && elements[0].isNull {
+//            return try type.init(from: decoder)
+//        }
+
         let attributes = container.withShared { keyedBox in
             keyedBox.attributes[key.stringValue]
         }
@@ -322,6 +327,7 @@ extension XMLKeyedDecodingContainer {
             guard
                 let anyBox = elements.isEmpty ? attributes.first : elements as Box?
             else {
+                print("no anybox")
                 throw DecodingError.keyNotFound(key, DecodingError.Context(
                     codingPath: decoder.codingPath,
                     debugDescription:
@@ -337,13 +343,16 @@ extension XMLKeyedDecodingContainer {
         let value: T?
         if !(type is AnySequence.Type), let unkeyedBox = box as? UnkeyedBox,
             let first = unkeyedBox.first {
+            print("not any sequence: \(first)")
             value = try decoder.unbox(first)
         } else {
+            print("not NOT any sequence")
             value = try decoder.unbox(box)
         }
 
         if value == nil, let type = type as? AnyOptional.Type,
             let result = type.init() as? T {
+            print("value == nil, type is any option")
             return result
         }
 
