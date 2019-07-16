@@ -381,7 +381,7 @@ open class XMLEncoder {
         if let keyedBox = topLevel as? KeyedBox {
             elementOrNone = XMLCoderElement(key: rootKey, box: keyedBox)
         } else if let unkeyedBox = topLevel as? UnkeyedBox {
-            elementOrNone = XMLCoderElement.containsChoice(key: rootKey, box: unkeyedBox)
+            elementOrNone = XMLCoderElement.ommittingNestedElementKeys(key: rootKey, box: unkeyedBox)
         } else {
             fatalError("Unrecognized top-level element of type: \(type(of: topLevel))")
         }
