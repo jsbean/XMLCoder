@@ -121,7 +121,6 @@ struct XMLKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol {
     public func decode<T: Decodable>(
         _ type: T.Type, forKey key: Key
     ) throws -> T {
-        print("decode: \(type) for key: \(key) ------------------------------------")
         let attributeFound = container.withShared { keyedBox in
             !keyedBox.attributes[key.stringValue].isEmpty
         }
@@ -134,7 +133,6 @@ struct XMLKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol {
             let result = type.init() as? T {
             return result
         }
-        print("proceeding onto decoding concrete: \(type) ...")
         return try decodeConcrete(type, forKey: key)
     }
 
@@ -327,7 +325,6 @@ extension XMLKeyedDecodingContainer {
             guard
                 let anyBox = elements.isEmpty ? attributes.first : elements as Box?
             else {
-                print("no anybox")
                 throw DecodingError.keyNotFound(key, DecodingError.Context(
                     codingPath: decoder.codingPath,
                     debugDescription:
@@ -343,16 +340,13 @@ extension XMLKeyedDecodingContainer {
         let value: T?
         if !(type is AnySequence.Type), let unkeyedBox = box as? UnkeyedBox,
             let first = unkeyedBox.first {
-            print("not any sequence: \(first)")
             value = try decoder.unbox(first)
         } else {
-            print("not NOT any sequence")
             value = try decoder.unbox(box)
         }
 
         if value == nil, let type = type as? AnyOptional.Type,
             let result = type.init() as? T {
-            print("value == nil, type is any option")
             return result
         }
 

@@ -66,7 +66,6 @@ struct XMLUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     }
 
     public mutating func decode<T: Decodable>(_ type: T.Type) throws -> T {
-        print("unkeyed decode: \(type)")
         return try decode(type) { decoder, box in
             try decoder.unbox(box)
         }
@@ -103,29 +102,7 @@ struct XMLUnkeyedDecodingContainer: UnkeyedDecodingContainer {
             unkeyedBox[self.currentIndex]
         }
 
-
-
-        var value: T? = nil
-
-        if type.self is XMLChoiceDecodable.Type, let singleElement = box as? SingleElementBox {
-            print("\(type) is XMLChoiceDecodable")
-            print("single key: \(singleElement.key): element: \(singleElement.element)")
-
-            do {
-                value = try decode(decoder, singleElement.element)
-            } catch {
-                value = try decode(decoder, KeyedBox(
-                    elements: KeyedStorage([(singleElement.key, singleElement.element)]),
-                    attributes: []
-                ))
-            }
-            print("value?: \(value)")
-        } else {
-            value = try decode(decoder, box)
-        }
-
-
-        print("decoded value: \(value)")
+        let value = try decode(decoder, box)
 
         defer { currentIndex += 1 }
 

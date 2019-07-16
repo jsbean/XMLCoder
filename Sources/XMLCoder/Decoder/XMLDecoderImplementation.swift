@@ -376,13 +376,6 @@ extension XMLDecoderImplementation {
     }
 
     func unbox<T: Decodable>(_ box: SingleElementBox) throws -> T {
-
-        print("unbox single element box: \(box.key): \(box.element) into: \(T.self)")
-
-        if T.self is XMLChoiceDecodable.Type {
-            print("i am choice decodable!")
-        }
-
         do {
             return try unbox(box.element)
 
