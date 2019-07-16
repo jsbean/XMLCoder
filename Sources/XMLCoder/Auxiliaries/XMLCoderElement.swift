@@ -103,10 +103,13 @@ struct XMLCoderElement: Equatable {
         prettyPrinted: Bool
     ) -> String {
         var string = ""
+        // Fix added for empty key adjustment in `UnkeyedBox` taking static func builder
+        let nonEmptyKey = element.key != ""
+        let level = nonEmptyKey ? level + 1 : level
         string += element._toXMLString(
             indented: level + 1, withCDATA: cdata, formatting: formatting
         )
-        string += prettyPrinted ? "\n" : ""
+        string += (prettyPrinted && nonEmptyKey) ? "\n" : ""
         return string
     }
 
