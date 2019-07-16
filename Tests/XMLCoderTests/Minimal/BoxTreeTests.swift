@@ -29,9 +29,12 @@ class BoxTreeTests: XCTestCase {
             attributes: []
         )
 
-//        let boxTree = try XCTUnwrap(root.transformToBoxTree() as? KeyedBox)
-//        let foo = try XCTUnwrap(boxTree.elements["foo"])
+        guard let boxTree = root.transformToBoxTree() as? KeyedBox else {
+            XCTFail("boxtTree is not a KeyedBox");
+            return
+        }
+        let foo = boxTree.elements["foo"]
+        XCTAssertEqual(foo.count, 2)
 
-//        XCTAssertEqual(foo.count, 2)
     }
 }
