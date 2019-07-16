@@ -14,7 +14,6 @@ struct SingleElementBox: SimpleBox {
 }
 
 extension SingleElementBox: Box {
-
     var isNull: Bool {
         return false
     }

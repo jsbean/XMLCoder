@@ -28,12 +28,13 @@ class BoxTreeTests: XCTestCase {
             elements: [e1, e2],
             attributes: []
         )
-        // FIXME: Use `XCTUnwrap` when commonly available
+
         guard let boxTree = root.transformToBoxTree() as? KeyedBox else {
             XCTFail("boxtTree is not a KeyedBox");
             return
         }
         let foo = boxTree.elements["foo"]
         XCTAssertEqual(foo.count, 2)
+
     }
 }
