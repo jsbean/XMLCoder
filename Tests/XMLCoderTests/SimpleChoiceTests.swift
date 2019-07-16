@@ -94,7 +94,7 @@ class SimpleChoiceTests: XCTestCase {
         let decoded = try XMLDecoder().decode([IntOrString].self, from: encoded)
         XCTAssertEqual(original, decoded)
     }
-    
+
     func testIntOrStringDoubleArrayRoundTrip() throws {
         let original: [[IntOrString]] = [[
             .int(1),
