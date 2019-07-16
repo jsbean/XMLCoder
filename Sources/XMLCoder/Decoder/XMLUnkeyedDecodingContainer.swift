@@ -99,10 +99,10 @@ struct XMLUnkeyedDecodingContainer: UnkeyedDecodingContainer {
         defer { self.decoder.codingPath.removeLast() }
 
         let box = container.withShared { unkeyedBox in
-            return unkeyedBox[self.currentIndex]
+            unkeyedBox[self.currentIndex]
         }
 
-        var value = try decode(decoder, box)
+        let value = try decode(decoder, box)
 
         defer { currentIndex += 1 }
 
