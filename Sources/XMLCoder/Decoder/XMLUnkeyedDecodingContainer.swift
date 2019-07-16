@@ -99,20 +99,10 @@ struct XMLUnkeyedDecodingContainer: UnkeyedDecodingContainer {
         defer { self.decoder.codingPath.removeLast() }
 
         let box = container.withShared { unkeyedBox in
-            unkeyedBox[self.currentIndex]
+            return unkeyedBox[self.currentIndex]
         }
 
         var value = try decode(decoder, box)
-
-        // In order to support decoding enums with associated values, check to see if we have
-        // performed an injection of single key-valued `KeyedBox` elements in
-        // XMLDecoderImplementation.unkeyedContainer(), and attempt to decode the single element
-        // contained therein.
-        if value == nil {
-            if let keyed = box as? KeyedBox, keyed.elements.count == 1 {
-                value = try decode(decoder, keyed.elements[keyed.elements.keys[0]])
-            }
-        }
 
         defer { currentIndex += 1 }
 
