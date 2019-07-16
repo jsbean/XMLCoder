@@ -250,10 +250,10 @@ struct XMLCoderElement: Equatable {
 // MARK: - Convenience Initializers
 
 extension XMLCoderElement {
-    static func containsChoice(key: String, box: UnkeyedBox) -> XMLCoderElement {
-        return XMLCoderElement(key: key, elements: box.map {
-            XMLCoderElement(key: "", box: $0)
-        })
+    /// Creates an `XMLCoderElement` for collections of `XMLChoiceEncodable`-conforming types wherein the key for each
+    /// element contained therein is ommitted.
+    static func ommittingNestedElementKeys(key: String, box: UnkeyedBox) -> XMLCoderElement {
+        return XMLCoderElement(key: key, elements: box.map { XMLCoderElement(key: "", box: $0) })
     }
 
     init(key: String, box: UnkeyedBox) {
