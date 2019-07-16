@@ -377,6 +377,7 @@ extension XMLDecoderImplementation {
         do {
             return try unbox(box.element)
         } catch {
+            // FIXME: Find a more economical way to unbox a `SingleElementBox` !
             return try unbox(
                 KeyedBox(
                     elements: KeyedStorage([(box.key, box.element)]),
