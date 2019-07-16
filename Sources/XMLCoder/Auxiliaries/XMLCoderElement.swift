@@ -251,7 +251,7 @@ extension XMLCoderElement {
             XMLCoderElement(key: "", box: $0)
         })
     }
-    
+
     init(key: String, box: UnkeyedBox) {
         self.init(key: key, elements: box.map {
             XMLCoderElement(key: key, box: $0)
