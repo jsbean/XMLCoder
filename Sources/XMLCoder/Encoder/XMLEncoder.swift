@@ -337,11 +337,51 @@ open class XMLEncoder {
         if let keyedBox = topLevel as? KeyedBox {
             elementOrNone = XMLCoderElement(key: rootKey, box: keyedBox)
         } else if let unkeyedBox = topLevel as? UnkeyedBox {
-            if T.self is ArrayOfXMLChoiceEncodable.Type {
-                elementOrNone = XMLCoderElement.containsChoice(key: rootKey, box: unkeyedBox)
-            } else {
-                elementOrNone = XMLCoderElement(key: rootKey, box: unkeyedBox)
-            }
+            elementOrNone = XMLCoderElement(key: rootKey, box: unkeyedBox)
+        } else {
+            fatalError("Unrecognized top-level element of type: \(type(of: topLevel))")
+        }
+
+        guard let element = elementOrNone else {
+            throw EncodingError.invalidValue(value, EncodingError.Context(
+                codingPath: [],
+                debugDescription: "Unable to encode the given top-level value to XML."
+            ))
+        }
+
+        let withCDATA = stringEncodingStrategy != .deferredToString
+        return element.toXMLString(with: header,
+                                   withCDATA: withCDATA,
+                                   formatting: outputFormatting)
+            .data(using: .utf8, allowLossyConversion: true)!
+    }
+
+    /// Encodes the given top-level value and returns its XML representation.
+    ///
+    /// - parameter value: The `Collection` of `XMLChoiceEncodable` values to encode.
+    /// - parameter withRootKey: the key used to wrap the encoded values.
+    /// - returns: A new `Data` value containing the encoded XML data.
+    /// - throws: `EncodingError.invalidValue` if a non-conforming
+    /// floating-point value is encountered during encoding, and the encoding
+    /// strategy is `.throw`.
+    /// - throws: An error if any value throws an error during encoding.
+    open func encode<T: Collection & Encodable>(
+        _ value: T, withRootKey rootKey: String,
+        header: XMLHeader? = nil
+    ) throws -> Data where T.Element: XMLChoiceEncodable {
+        let encoder = XMLEncoderImplementation(
+            options: options,
+            nodeEncodings: []
+        )
+        encoder.nodeEncodings.append(options.nodeEncodingStrategy.nodeEncodings(forType: T.self, with: encoder))
+
+        let topLevel = try encoder.box(value)
+
+        let elementOrNone: XMLCoderElement?
+        if let keyedBox = topLevel as? KeyedBox {
+            elementOrNone = XMLCoderElement(key: rootKey, box: keyedBox)
+        } else if let unkeyedBox = topLevel as? UnkeyedBox {
+            elementOrNone = XMLCoderElement.containsChoice(key: rootKey, box: unkeyedBox)
         } else {
             fatalError("Unrecognized top-level element of type: \(type(of: topLevel))")
         }
