@@ -244,6 +244,12 @@ struct XMLCoderElement: Equatable {
 // MARK: - Convenience Initializers
 
 extension XMLCoderElement {
+    static func containsChoice(key: String, box: UnkeyedBox) -> XMLCoderElement {
+        return XMLCoderElement(key: key, elements: box.map {
+            XMLCoderElement(key: "", box: $0)
+        })
+    }
+    
     init(key: String, box: UnkeyedBox) {
         self.init(key: key, elements: box.map {
             XMLCoderElement(key: key, box: $0)
