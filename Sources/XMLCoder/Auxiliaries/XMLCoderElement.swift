@@ -261,6 +261,10 @@ extension XMLCoderElement {
             XMLCoderElement(key: key, box: $0)
         })
     }
+    
+    init(key: String, box: SingleElementBox) {
+        self.init(key: key, elements: [XMLCoderElement(key: key, box: box.element)])
+    }
 
     init(key: String, box: KeyedBox) {
         var elements: [XMLCoderElement] = []
@@ -314,10 +318,14 @@ extension XMLCoderElement {
             self.init(key: key, box: sharedUnkeyedBox.unboxed)
         case let sharedKeyedBox as SharedBox<KeyedBox>:
             self.init(key: key, box: sharedKeyedBox.unboxed)
+        case let sharedSingleElementBox as SharedBox<SingleElementBox>:
+            self.init(key: key, box: sharedSingleElementBox.unboxed)
         case let unkeyedBox as UnkeyedBox:
             self.init(key: key, box: unkeyedBox)
         case let keyedBox as KeyedBox:
             self.init(key: key, box: keyedBox)
+        case let singleElementBox as SingleElementBox:
+            self.init(key: key, box: singleElementBox)
         case let simpleBox as SimpleBox:
             self.init(key: key, box: simpleBox)
         case let box:
