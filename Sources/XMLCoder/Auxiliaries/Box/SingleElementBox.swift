@@ -9,6 +9,11 @@
 /// an element nested in a keyed or unkeyed container, or an choice between multiple known-typed values (implemented in Swift using
 /// enums with associated values).
 struct SingleElementBox: SimpleBox {
+    typealias Key = String
+    typealias Attribute = SimpleBox
+    typealias Attributes = KeyedStorage<Key, Attribute>
+    
+    var attributes = Attributes()
     var key: String
     var element: Box
 }
