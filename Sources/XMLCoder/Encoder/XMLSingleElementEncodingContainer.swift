@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct XMLSingleElementEncodingContainer<K: XMLChoiceKey>: KeyedEncodingContainerProtocol {
+struct XMLSingleElementEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
     typealias Key = K
     
     // MARK: Properties
