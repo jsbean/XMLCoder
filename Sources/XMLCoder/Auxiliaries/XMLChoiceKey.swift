@@ -5,4 +5,4 @@
 //  Created by Benjamin Wetherfield on 7/17/19.
 //
 
-public protocol XMLChoiceKey {}
+public protocol XMLChoiceKey: CodingKey {}
