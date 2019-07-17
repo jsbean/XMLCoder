@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct XMLKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
+struct XMLSingleElementEncodingContainer<K: XMLChoiceKey>: KeyedEncodingContainerProtocol {
     typealias Key = K
     
     // MARK: Properties
@@ -176,22 +176,22 @@ struct XMLKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
             wrapping: sharedUnkeyed
         )
     }
-//
-//    public mutating func superEncoder() -> Encoder {
-//        return XMLReferencingEncoder(
-//            referencing: encoder,
-//            key: XMLKey.super,
-//            convertedKey: _converted(XMLKey.super),
-//            wrapping: container
-//        )
-//    }
-//
-//    public mutating func superEncoder(forKey key: Key) -> Encoder {
-//        return XMLReferencingEncoder(
-//            referencing: encoder,
-//            key: key,
-//            convertedKey: _converted(key),
-//            wrapping: container
-//        )
-//    }
+
+    public mutating func superEncoder() -> Encoder {
+        return XMLReferencingEncoder(
+            referencing: encoder,
+            key: XMLKey.super,
+            convertedKey: _converted(XMLKey.super),
+            wrapping: container
+        )
+    }
+
+    public mutating func superEncoder(forKey key: Key) -> Encoder {
+        return XMLReferencingEncoder(
+            referencing: encoder,
+            key: key,
+            convertedKey: _converted(key),
+            wrapping: container
+        )
+    }
 }
