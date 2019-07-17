@@ -158,6 +158,48 @@ struct XMLKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
         )
         return KeyedEncodingContainer(container)
     }
+    
+    mutating func nestedKeyedContainer<NestedKey>(
+        keyedBy _: NestedKey.Type,
+        forKey key: Key
+    ) -> KeyedEncodingContainer<NestedKey> {
+        let sharedKeyed = SharedBox(KeyedBox())
+        
+        self.container.withShared { container in
+            container.elements.append(sharedKeyed, at: _converted(key).stringValue)
+        }
+        
+        codingPath.append(key)
+        defer { self.codingPath.removeLast() }
+        
+        let container = XMLKeyedEncodingContainer<NestedKey>(
+            referencing: encoder,
+            codingPath: codingPath,
+            wrapping: sharedKeyed
+        )
+        return KeyedEncodingContainer(container)
+    }
+    
+    mutating func nestedSingleElementContainer<NestedKey>(
+        keyedBy _: NestedKey.Type,
+        forKey key: Key
+        ) -> KeyedEncodingContainer<NestedKey> {
+        let sharedSingleElement = SharedBox(SingleElementBox(attributes: SingleElementBox.Attributes(), key: "", element: NullBox()))
+        
+        self.container.withShared { container in
+            container.elements.append(sharedSingleElement, at: _converted(key).stringValue)
+        }
+        
+        codingPath.append(key)
+        defer { self.codingPath.removeLast() }
+        
+        let container = XMLSingleElementEncodingContainer<NestedKey>(
+            referencing: encoder,
+            codingPath: codingPath,
+            wrapping: sharedSingleElement
+        )
+        return KeyedEncodingContainer(container)
+    }
 
     public mutating func nestedUnkeyedContainer(
         forKey key: Key
