@@ -80,6 +80,23 @@ class XMLEncoderImplementation: Encoder {
         let container = XMLKeyedEncodingContainer<Key>(referencing: self, codingPath: codingPath, wrapping: topContainer)
         return KeyedEncodingContainer(container)
     }
+    
+    public func container<Key: XMLChoiceKey>(keyedBy _: Key.Type) -> KeyedEncodingContainer<Key> {
+        let topContainer: SharedBox<SingleElementBox>
+        if canEncodeNewValue {
+            // We haven't yet pushed a container at this level; do so here.
+            topContainer = storage.pushSingleElementContainer()
+        } else {
+            guard let container = storage.lastContainer as? SharedBox<SingleElementBox> else {
+                preconditionFailure("Attempt to push new (single element) keyed encoding container when already previously encoded at this path.")
+            }
+            
+            topContainer = container
+        }
+        
+        let container = XMLSingleElementEncodingContainer<Key>(referencing: self, codingPath: codingPath, wrapping: topContainer)
+        return KeyedEncodingContainer(container)
+    }
 
     public func unkeyedContainer() -> UnkeyedEncodingContainer {
         // If an existing unkeyed container was already requested, return that one.
