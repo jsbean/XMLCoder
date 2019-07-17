@@ -144,6 +144,17 @@ struct XMLSingleElementEncodingContainer<K: CodingKey>: KeyedEncodingContainerPr
         keyedBy _: NestedKey.Type,
         forKey key: Key
         ) -> KeyedEncodingContainer<NestedKey> {
+        if NestedKey.self is XMLChoiceKey.Type {
+            return nestedSingleElementContainer(keyedBy: NestedKey.self, forKey: key)
+        } else {
+            return nestedKeyedContainer(keyedBy: NestedKey.self, forKey: key)
+        }
+    }
+    
+    mutating func nestedKeyedContainer<NestedKey>(
+        keyedBy _: NestedKey.Type,
+        forKey key: Key
+        ) -> KeyedEncodingContainer<NestedKey> {
         let sharedKeyed = SharedBox(KeyedBox())
         
         self.container.withShared { container in
@@ -158,6 +169,28 @@ struct XMLSingleElementEncodingContainer<K: CodingKey>: KeyedEncodingContainerPr
             referencing: encoder,
             codingPath: codingPath,
             wrapping: sharedKeyed
+        )
+        return KeyedEncodingContainer(container)
+    }
+    
+    mutating func nestedSingleElementContainer<NestedKey>(
+        keyedBy _: NestedKey.Type,
+        forKey key: Key
+        ) -> KeyedEncodingContainer<NestedKey> {
+        let sharedSingleElement = SharedBox(SingleElementBox(attributes: SingleElementBox.Attributes(), key: "", element: NullBox()))
+        
+        self.container.withShared { container in
+            container.element = sharedSingleElement
+            container.key = _converted(key).stringValue
+        }
+        
+        codingPath.append(key)
+        defer { self.codingPath.removeLast() }
+        
+        let container = XMLSingleElementEncodingContainer<NestedKey>(
+            referencing: encoder,
+            codingPath: codingPath,
+            wrapping: sharedSingleElement
         )
         return KeyedEncodingContainer(container)
     }
