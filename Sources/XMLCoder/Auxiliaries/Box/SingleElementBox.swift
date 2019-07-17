@@ -9,8 +9,8 @@
 /// an element nested in a keyed or unkeyed container, or an choice between multiple known-typed values (implemented in Swift using
 /// enums with associated values).
 struct SingleElementBox: SimpleBox {
-    let key: String
-    let element: Box
+    var key: String
+    var element: Box
 }
 
 extension SingleElementBox: Box {
