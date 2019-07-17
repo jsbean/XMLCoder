@@ -263,7 +263,7 @@ extension XMLCoderElement {
     }
     
     init(key: String, box: SingleElementBox) {
-        self.init(key: key, elements: [XMLCoderElement(key: key, box: box.element)])
+        self.init(key: key, elements: [XMLCoderElement(key: box.key, box: box.element)])
     }
 
     init(key: String, box: KeyedBox) {
