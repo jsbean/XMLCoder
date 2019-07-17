@@ -94,7 +94,7 @@ struct XMLUnkeyedEncodingContainer: UnkeyedEncodingContainer {
         codingPath.append(XMLKey(index: count))
         defer { self.codingPath.removeLast() }
         
-        let sharedSingleElement = SharedBox(SingleElementBox(attributes: SingleElementBox.Attributes(), key: "", element: NullBox()))
+        let sharedSingleElement = SharedBox(SingleElementBox())
         self.container.withShared { container in
             container.append(sharedSingleElement)
         }

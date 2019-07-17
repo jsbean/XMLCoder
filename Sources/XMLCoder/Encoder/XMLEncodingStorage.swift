@@ -38,7 +38,7 @@ struct XMLEncodingStorage {
     }
     
     mutating func pushSingleElementContainer() -> SharedBox<SingleElementBox> {
-        let container = SharedBox(SingleElementBox(attributes: SingleElementBox.Attributes(), key: "", element: NullBox()))
+        let container = SharedBox(SingleElementBox())
         containers.append(container)
         return container
     }

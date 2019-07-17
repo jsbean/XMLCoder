@@ -14,8 +14,8 @@ struct SingleElementBox: SimpleBox {
     typealias Attributes = KeyedStorage<Key, Attribute>
     
     var attributes = Attributes()
-    var key: String
-    var element: Box
+    var key: String = ""
+    var element: Box = NullBox()
 }
 
 extension SingleElementBox: Box {

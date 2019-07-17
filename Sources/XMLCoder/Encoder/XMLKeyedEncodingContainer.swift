@@ -174,7 +174,7 @@ struct XMLKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
         keyedBy _: NestedKey.Type,
         forKey key: Key
         ) -> KeyedEncodingContainer<NestedKey> {
-        let sharedSingleElement = SharedBox(SingleElementBox(attributes: SingleElementBox.Attributes(), key: "", element: NullBox()))
+        let sharedSingleElement = SharedBox(SingleElementBox())
         
         self.container.withShared { container in
             container.elements.append(sharedSingleElement, at: _converted(key).stringValue)
