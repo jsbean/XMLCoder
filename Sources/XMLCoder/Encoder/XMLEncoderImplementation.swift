@@ -71,7 +71,7 @@ class XMLEncoderImplementation: Encoder {
         }
     }
     
-    open func keyedContainer<Key>(keyedBy _: Key.Type) -> KeyedEncodingContainer<Key> {
+    public func keyedContainer<Key>(keyedBy _: Key.Type) -> KeyedEncodingContainer<Key> {
         // If an existing keyed container was already requested, return that one.
         let topContainer: SharedBox<KeyedBox>
         if canEncodeNewValue {
@@ -89,7 +89,7 @@ class XMLEncoderImplementation: Encoder {
         return KeyedEncodingContainer(container)
     }
     
-    open func singleElementContainer<Key>(keyedBy _: Key.Type) -> KeyedEncodingContainer<Key> {
+    public func singleElementContainer<Key>(keyedBy _: Key.Type) -> KeyedEncodingContainer<Key> {
         let topContainer: SharedBox<SingleElementBox>
         if canEncodeNewValue {
             // We haven't yet pushed a container at this level; do so here.
