@@ -21,7 +21,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		1482D59A22DD2A1700AE2D6E /* XMLChoiceCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1482D59922DD2A1700AE2D6E /* XMLChoiceCodable.swift */; };
 		1482D59C22DD2A4400AE2D6E /* XMLChoiceDecodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1482D59B22DD2A4400AE2D6E /* XMLChoiceDecodable.swift */; };
 		1482D59E22DD2A6B00AE2D6E /* XMLChoiceEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1482D59D22DD2A6B00AE2D6E /* XMLChoiceEncodable.swift */; };
 		1482D5A222DD2D9400AE2D6E /* SimpleChoiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1482D5A122DD2D9400AE2D6E /* SimpleChoiceTests.swift */; };
@@ -152,7 +151,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1482D59922DD2A1700AE2D6E /* XMLChoiceCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLChoiceCodable.swift; sourceTree = "<group>"; };
 		1482D59B22DD2A4400AE2D6E /* XMLChoiceDecodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLChoiceDecodable.swift; sourceTree = "<group>"; };
 		1482D59D22DD2A6B00AE2D6E /* XMLChoiceEncodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLChoiceEncodable.swift; sourceTree = "<group>"; };
 		1482D5A122DD2D9400AE2D6E /* SimpleChoiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleChoiceTests.swift; sourceTree = "<group>"; };
@@ -335,7 +333,6 @@
 				BF9457B121CBB4DB005ACFDE /* XMLHeader.swift */,
 				BF9457B321CBB4DB005ACFDE /* XMLStackParser.swift */,
 				BF9457B521CBB4DB005ACFDE /* XMLKey.swift */,
-				1482D59922DD2A1700AE2D6E /* XMLChoiceCodable.swift */,
 				B54B122D22DF916F0014109D /* XMLChoiceKey.swift */,
 			);
 			path = Auxiliaries;
@@ -639,7 +636,6 @@
 				B3BE1D652202CB7200259831 /* SingleValueEncodingContainer.swift in Sources */,
 				BF9457D521CBB59E005ACFDE /* UIntBox.swift in Sources */,
 				D1EC3E65225A38EC00C610E3 /* KeyedStorage.swift in Sources */,
-				1482D59A22DD2A1700AE2D6E /* XMLChoiceCodable.swift in Sources */,
 				OBJ_51 /* XMLKeyedDecodingContainer.swift in Sources */,
 				OBJ_52 /* XMLUnkeyedDecodingContainer.swift in Sources */,
 				B54B122E22DF916F0014109D /* XMLChoiceKey.swift in Sources */,
