@@ -21,7 +21,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		1482D59C22DD2A4400AE2D6E /* XMLChoiceDecodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1482D59B22DD2A4400AE2D6E /* XMLChoiceDecodable.swift */; };
 		1482D59E22DD2A6B00AE2D6E /* XMLChoiceEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1482D59D22DD2A6B00AE2D6E /* XMLChoiceEncodable.swift */; };
 		1482D5A222DD2D9400AE2D6E /* SimpleChoiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1482D5A122DD2D9400AE2D6E /* SimpleChoiceTests.swift */; };
 		1482D5A422DD2F4D00AE2D6E /* CompositeChoiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1482D5A322DD2F4D00AE2D6E /* CompositeChoiceTests.swift */; };
@@ -151,7 +150,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1482D59B22DD2A4400AE2D6E /* XMLChoiceDecodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLChoiceDecodable.swift; sourceTree = "<group>"; };
 		1482D59D22DD2A6B00AE2D6E /* XMLChoiceEncodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLChoiceEncodable.swift; sourceTree = "<group>"; };
 		1482D5A122DD2D9400AE2D6E /* SimpleChoiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleChoiceTests.swift; sourceTree = "<group>"; };
 		1482D5A322DD2F4D00AE2D6E /* CompositeChoiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositeChoiceTests.swift; sourceTree = "<group>"; };
@@ -503,7 +501,6 @@
 				OBJ_12 /* XMLDecodingStorage.swift */,
 				OBJ_13 /* XMLKeyedDecodingContainer.swift */,
 				OBJ_14 /* XMLUnkeyedDecodingContainer.swift */,
-				1482D59B22DD2A4400AE2D6E /* XMLChoiceDecodable.swift */,
 			);
 			path = Decoder;
 			sourceTree = "<group>";
@@ -640,7 +637,6 @@
 				OBJ_52 /* XMLUnkeyedDecodingContainer.swift in Sources */,
 				B54B122E22DF916F0014109D /* XMLChoiceKey.swift in Sources */,
 				OBJ_53 /* EncodingErrorExtension.swift in Sources */,
-				1482D59C22DD2A4400AE2D6E /* XMLChoiceDecodable.swift in Sources */,
 				1482D59E22DD2A6B00AE2D6E /* XMLChoiceEncodable.swift in Sources */,
 				BF9457B921CBB4DB005ACFDE /* XMLStackParser.swift in Sources */,
 				OBJ_54 /* XMLEncoder.swift in Sources */,
