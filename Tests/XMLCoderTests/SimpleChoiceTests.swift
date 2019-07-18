@@ -13,7 +13,7 @@ private enum IntOrString: Equatable {
     case string(String)
 }
 
-extension IntOrString: XMLChoiceCodable {
+extension IntOrString: Codable {
     enum CodingKeys: String, XMLChoiceKey {
         case int
         case string

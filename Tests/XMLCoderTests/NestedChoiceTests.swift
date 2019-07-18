@@ -52,7 +52,7 @@ extension Paragraph: Codable {
     }
 }
 
-extension Entry: XMLChoiceCodable {
+extension Entry: Codable {
     private enum CodingKeys: String, CodingKey {
         case run, properties, br
     }
