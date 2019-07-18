@@ -1,41 +1,41 @@
 //
-//  XMLKeyedEncodingContainer.swift
+//  XMLSingleElementEncodingContainer.swift
 //  XMLCoder
 //
-//  Created by Vincent Esche on 11/20/18.
+//  Created by Benjamin Wetherfield on 7/17/19.
 //
 
 import Foundation
 
-struct XMLKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
+struct XMLSingleElementEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
     typealias Key = K
-
+    
     // MARK: Properties
-
+    
     /// A reference to the encoder we're writing to.
     private let encoder: XMLEncoderImplementation
-
+    
     /// A reference to the container we're writing to.
-    private var container: SharedBox<KeyedBox>
-
+    private var container: SharedBox<SingleElementBox>
+    
     /// The path of coding keys taken to get to this point in encoding.
     public private(set) var codingPath: [CodingKey]
-
+    
     // MARK: - Initialization
-
+    
     /// Initializes `self` with the given references.
     init(
         referencing encoder: XMLEncoderImplementation,
         codingPath: [CodingKey],
-        wrapping container: SharedBox<KeyedBox>
-    ) {
+        wrapping container: SharedBox<SingleElementBox>
+        ) {
         self.encoder = encoder
         self.codingPath = codingPath
         self.container = container
     }
-
+    
     // MARK: - Coding Path Operations
-
+    
     private func _converted(_ key: CodingKey) -> CodingKey {
         switch encoder.options.keyEncodingStrategy {
         case .useDefaultKeys:
@@ -64,29 +64,30 @@ struct XMLKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
             return XMLKey(stringValue: newKeyString, intValue: key.intValue)
         }
     }
-
+    
     // MARK: - KeyedEncodingContainerProtocol Methods
-
+    
     public mutating func encodeNil(forKey key: Key) throws {
         container.withShared {
-            $0.elements.append(NullBox(), at: _converted(key).stringValue)
+            $0.key = _converted(key).stringValue
+            $0.element = NullBox()
         }
     }
-
+    
     public mutating func encode<T: Encodable>(
         _ value: T,
         forKey key: Key
-    ) throws {
+        ) throws {
         return try encode(value, forKey: key) { encoder, value in
             try encoder.box(value)
         }
     }
-
+    
     private mutating func encode<T: Encodable>(
         _ value: T,
         forKey key: Key,
         encode: (XMLEncoderImplementation, T) throws -> Box
-    ) throws {
+        ) throws {
         defer {
             _ = self.encoder.nodeEncodings.removeLast()
             self.encoder.codingPath.removeLast()
@@ -103,7 +104,7 @@ struct XMLKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
         )
         encoder.nodeEncodings.append(nodeEncodings)
         let box = try encode(encoder, value)
-
+        
         let mySelf = self
         let attributeEncoder: (T, Key, Box) throws -> () = { value, key, box in
             guard let attribute = box as? SimpleBox else {
@@ -116,17 +117,18 @@ struct XMLKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
                 container.attributes.append(attribute, at: mySelf._converted(key).stringValue)
             }
         }
-
+        
         let elementEncoder: (T, Key, Box) throws -> () = { _, key, box in
             mySelf.container.withShared { container in
-                container.elements.append(box, at: mySelf._converted(key).stringValue)
+                container.element = box
+                container.key = mySelf._converted(key).stringValue
             }
         }
-
+        
         defer {
             self = mySelf
         }
-
+        
         switch strategy(key) {
         case .attribute:
             try attributeEncoder(value, key, box)
@@ -137,11 +139,11 @@ struct XMLKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
             try elementEncoder(value, key, box)
         }
     }
-
+    
     public mutating func nestedContainer<NestedKey>(
         keyedBy _: NestedKey.Type,
         forKey key: Key
-    ) -> KeyedEncodingContainer<NestedKey> {
+        ) -> KeyedEncodingContainer<NestedKey> {
         if NestedKey.self is XMLChoiceKey.Type {
             return nestedSingleElementContainer(keyedBy: NestedKey.self, forKey: key)
         } else {
@@ -152,11 +154,12 @@ struct XMLKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
     mutating func nestedKeyedContainer<NestedKey>(
         keyedBy _: NestedKey.Type,
         forKey key: Key
-    ) -> KeyedEncodingContainer<NestedKey> {
+        ) -> KeyedEncodingContainer<NestedKey> {
         let sharedKeyed = SharedBox(KeyedBox())
         
         self.container.withShared { container in
-            container.elements.append(sharedKeyed, at: _converted(key).stringValue)
+            container.element = sharedKeyed
+            container.key = _converted(key).stringValue
         }
         
         codingPath.append(key)
@@ -177,7 +180,8 @@ struct XMLKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
         let sharedSingleElement = SharedBox(SingleElementBox())
         
         self.container.withShared { container in
-            container.elements.append(sharedSingleElement, at: _converted(key).stringValue)
+            container.element = sharedSingleElement
+            container.key = _converted(key).stringValue
         }
         
         codingPath.append(key)
@@ -190,16 +194,17 @@ struct XMLKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
         )
         return KeyedEncodingContainer(container)
     }
-
+    
     public mutating func nestedUnkeyedContainer(
         forKey key: Key
-    ) -> UnkeyedEncodingContainer {
+        ) -> UnkeyedEncodingContainer {
         let sharedUnkeyed = SharedBox(UnkeyedBox())
-
+        
         container.withShared { container in
-            container.elements.append(sharedUnkeyed, at: _converted(key).stringValue)
+            container.element = sharedUnkeyed
+            container.key = _converted(key).stringValue
         }
-
+        
         codingPath.append(key)
         defer { self.codingPath.removeLast() }
         return XMLUnkeyedEncodingContainer(

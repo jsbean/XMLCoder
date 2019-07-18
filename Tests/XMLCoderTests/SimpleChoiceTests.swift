@@ -14,7 +14,7 @@ private enum IntOrString: Equatable {
 }
 
 extension IntOrString: XMLChoiceCodable {
-    enum CodingKeys: String, CodingKey {
+    enum CodingKeys: String, XMLChoiceKey {
         case int
         case string
     }

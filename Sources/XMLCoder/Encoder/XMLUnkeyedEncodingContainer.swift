@@ -62,22 +62,47 @@ struct XMLUnkeyedEncodingContainer: UnkeyedEncodingContainer {
             container.append(try encode(encoder, value))
         }
     }
-
+    
     public mutating func nestedContainer<NestedKey>(
         keyedBy _: NestedKey.Type
-    ) -> KeyedEncodingContainer<NestedKey> {
+        ) -> KeyedEncodingContainer<NestedKey> {
+        if NestedKey.self is XMLChoiceKey.Type {
+            return nestedSingleElementContainer(keyedBy: NestedKey.self)
+        } else {
+            return nestedKeyedContainer(keyedBy: NestedKey.self)
+        }
+    }
+    
+    public mutating func nestedKeyedContainer<NestedKey>(keyedBy _: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> {
         codingPath.append(XMLKey(index: count))
         defer { self.codingPath.removeLast() }
-
+        
         let sharedKeyed = SharedBox(KeyedBox())
         self.container.withShared { container in
             container.append(sharedKeyed)
         }
-
+        
         let container = XMLKeyedEncodingContainer<NestedKey>(
             referencing: encoder,
             codingPath: codingPath,
             wrapping: sharedKeyed
+        )
+        return KeyedEncodingContainer(container)
+    }
+    
+    public mutating func nestedSingleElementContainer<NestedKey>(keyedBy _: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> {
+        codingPath.append(XMLKey(index: count))
+        defer { self.codingPath.removeLast() }
+        
+        let sharedSingleElement = SharedBox(SingleElementBox())
+        self.container.withShared { container in
+            container.append(sharedSingleElement)
+        }
+        
+        let container = XMLSingleElementEncodingContainer<NestedKey>(
+            referencing: encoder,
+            codingPath: codingPath,
+            wrapping: sharedSingleElement
         )
         return KeyedEncodingContainer(container)
     }
