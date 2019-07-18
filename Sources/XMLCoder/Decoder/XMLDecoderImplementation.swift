@@ -70,9 +70,11 @@ class XMLDecoderImplementation: Decoder {
         return topContainer
     }
 
-    public func container<Key>(
-        keyedBy keyType: Key.Type
-    ) throws -> KeyedDecodingContainer<Key> {
+    public func container<Key>(keyedBy keyType: Key.Type) throws -> KeyedDecodingContainer<Key> {
+        return try keyedContainer(keyedBy: keyType)
+    }
+
+    public func keyedContainer<Key>(keyedBy _: Key.Type) throws -> KeyedDecodingContainer<Key> {
         let topContainer = try self.topContainer()
 
         switch topContainer {
