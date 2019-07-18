@@ -125,6 +125,52 @@ class XMLDecoderImplementation: Decoder {
         }
     }
 
+    public func singleElementContainer<Key>(keyedBy _: Key.Type) throws -> KeyedDecodingContainer<Key> {
+        let topContainer = try self.topContainer()
+
+        switch topContainer {
+        case _ where topContainer.isNull:
+            throw DecodingError.valueNotFound(
+                KeyedDecodingContainer<Key>.self,
+                DecodingError.Context(
+                    codingPath: codingPath,
+                    debugDescription:
+                    """
+                    Cannot get keyed decoding container -- found null box instead.
+                    """
+                )
+            )
+        case let string as StringBox:
+            return KeyedDecodingContainer(XMLKeyedDecodingContainer<Key>(
+                referencing: self,
+                wrapping: SharedBox(KeyedBox(
+                    elements: KeyedStorage([("value", string)]),
+                    attributes: KeyedStorage()
+                ))
+            ))
+        case let keyed as SharedBox<KeyedBox>:
+            return KeyedDecodingContainer(XMLKeyedDecodingContainer<Key>(
+                referencing: self,
+                wrapping: keyed
+            ))
+        case let unkeyed as SharedBox<UnkeyedBox>:
+            guard let keyed = unkeyed.withShared({ $0.first }) as? KeyedBox else {
+                fallthrough
+            }
+
+            return KeyedDecodingContainer(XMLKeyedDecodingContainer<Key>(
+                referencing: self,
+                wrapping: SharedBox(keyed)
+            ))
+        default:
+            throw DecodingError.typeMismatch(
+                at: codingPath,
+                expectation: [String: Any].self,
+                reality: topContainer
+            )
+        }
+    }
+
     public func unkeyedContainer() throws -> UnkeyedDecodingContainer {
         let topContainer = try self.topContainer()
 

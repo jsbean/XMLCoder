@@ -26,16 +26,10 @@ struct XMLSingleElementDecodingContainer<K: CodingKey>: KeyedDecodingContainerPr
     // MARK: - Initialization
 
     /// Initializes `self` by referencing the given decoder and container.
-    init(
-        referencing decoder: XMLDecoderImplementation,
-        wrapping container: KeyedContainer
-        ) {
+    init(referencing decoder: XMLDecoderImplementation, wrapping container: KeyedContainer) {
         self.decoder = decoder
 
-        func mapKeys(
-            _ container: KeyedContainer,
-            closure: (String) -> String
-            ) -> KeyedContainer {
+        func mapKeys(_ container: KeyedContainer, closure: (String) -> String) -> KeyedContainer {
             let attributes = container.withShared { keyedBox in
                 keyedBox.attributes.map { (closure($0), $1) }
             }
