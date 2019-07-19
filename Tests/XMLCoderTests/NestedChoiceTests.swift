@@ -53,7 +53,7 @@ extension Paragraph: Codable {
 }
 
 extension Entry: Codable {
-    private enum CodingKeys: String, CodingKey {
+    private enum CodingKeys: String, XMLChoiceKey {
         case run, properties, br
     }
     public init(from decoder: Decoder) throws {
