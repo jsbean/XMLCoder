@@ -1,5 +1,5 @@
 //
-//  XMLSingleElementDecodingContainer.swift
+//  XMLChoiceDecodingContainer.swift
 //  XMLCoder
 //
 //  Created by James Bean on 7/18/19.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct XMLSingleElementDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol {
+struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol {
     typealias Key = K
 
     // MARK: Properties
@@ -148,15 +148,15 @@ struct XMLSingleElementDecodingContainer<K: CodingKey>: KeyedDecodingContainerPr
         defer { decoder.codingPath.removeLast() }
 
         let value = container.withShared { $0.element }
-        let container: XMLSingleElementDecodingContainer<NestedKey>
+        let container: XMLChoiceDecodingContainer<NestedKey>
 
         if let keyedContainer = value as? SharedBox<SingleElementBox> {
-            container = XMLSingleElementDecodingContainer<NestedKey>(
+            container = XMLChoiceDecodingContainer<NestedKey>(
                 referencing: decoder,
                 wrapping: keyedContainer
             )
         } else if let keyedContainer = value as? SingleElementBox {
-            container = XMLSingleElementDecodingContainer<NestedKey>(
+            container = XMLChoiceDecodingContainer<NestedKey>(
                 referencing: decoder,
                 wrapping: SharedBox(keyedContainer)
             )
@@ -193,7 +193,7 @@ struct XMLSingleElementDecodingContainer<K: CodingKey>: KeyedDecodingContainerPr
 }
 
 /// Private functions
-extension XMLSingleElementDecodingContainer {
+extension XMLChoiceDecodingContainer {
     private func _errorDescription(of key: CodingKey) -> String {
         switch decoder.options.keyDecodingStrategy {
         case .convertFromSnakeCase:

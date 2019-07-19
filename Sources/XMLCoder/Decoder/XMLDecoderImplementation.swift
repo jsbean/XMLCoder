@@ -137,7 +137,7 @@ class XMLDecoderImplementation: Decoder {
                 reality: topContainer
             )
         }
-        let container = XMLSingleElementDecodingContainer<Key>(
+        let container = XMLChoiceDecodingContainer<Key>(
             referencing: self,
             wrapping: SharedBox(singleElement)
         )
