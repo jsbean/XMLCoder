@@ -131,8 +131,67 @@ struct XMLSingleElementDecodingContainer<K: CodingKey>: KeyedDecodingContainerPr
     }
 
     public func nestedContainer<NestedKey>(
+        keyedBy keyType: NestedKey.Type, forKey key: Key
+    ) throws -> KeyedDecodingContainer<NestedKey> {
+        if keyType.self is XMLChoiceKey.Type {
+            return try nestedSingleElementContainer(keyedBy: keyType, forKey: key)
+        } else {
+            return try nestedKeyedContainer(keyedBy: keyType, forKey: key)
+        }
+    }
+
+    public func nestedKeyedContainer<NestedKey>(
         keyedBy _: NestedKey.Type, forKey key: Key
-        ) throws -> KeyedDecodingContainer<NestedKey> {
+    ) throws -> KeyedDecodingContainer<NestedKey> {
+        decoder.codingPath.append(key)
+        defer { decoder.codingPath.removeLast() }
+
+        let elements = self.container.withShared { keyedBox in
+            keyedBox.elements[key.stringValue]
+        }
+
+        let attributes = self.container.withShared { keyedBox in
+            keyedBox.attributes[key.stringValue]
+        }
+
+        guard let value = elements.first ?? attributes.first else {
+            throw DecodingError.keyNotFound(key, DecodingError.Context(
+                codingPath: codingPath,
+                debugDescription:
+                """
+                Cannot get \(KeyedDecodingContainer<NestedKey>.self) -- \
+                no value found for key \"\(key.stringValue)\"
+                """
+            ))
+        }
+
+        let container: XMLKeyedDecodingContainer<NestedKey>
+        if let keyedContainer = value as? KeyedContainer {
+            container = XMLKeyedDecodingContainer<NestedKey>(
+                referencing: decoder,
+                wrapping: keyedContainer
+            )
+        } else if let keyedContainer = value as? KeyedBox {
+            container = XMLKeyedDecodingContainer<NestedKey>(
+                referencing: decoder,
+                wrapping: SharedBox(keyedContainer)
+            )
+        } else {
+            throw DecodingError.typeMismatch(
+                at: codingPath,
+                expectation: [String: Any].self,
+                reality: value
+            )
+        }
+
+        return KeyedDecodingContainer(container)
+    }
+
+    public func nestedSingleElementContainer<NestedKey>(
+        keyedBy _: NestedKey.Type, forKey key: Key
+    ) throws -> KeyedDecodingContainer<NestedKey> {
+        #warning("Specialize XMLSingleElementContainer.nestedSingleElementContainer")
+        print("XMLSingleElementContainer.nestedSingleElementContainer")
         decoder.codingPath.append(key)
         defer { decoder.codingPath.removeLast() }
 
