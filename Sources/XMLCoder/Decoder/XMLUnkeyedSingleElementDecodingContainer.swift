@@ -131,11 +131,11 @@ struct XMLUnkeyedSingleElementDecodingContainer: UnkeyedDecodingContainer {
     public mutating func nestedContainer<NestedKey>(
         keyedBy nestedType: NestedKey.Type
     ) throws -> KeyedDecodingContainer<NestedKey> {
-        fatalError()
+        fatalError("Unkeyed collections of ambiguous nested elements cannot produce a nested container.")
     }
 
     public mutating func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {
-        fatalError()
+        fatalError("Unkeyed collections of ambiguous nested elements cannot produce a nested unkeyed container.")
     }
 
     public mutating func superDecoder() throws -> Decoder {

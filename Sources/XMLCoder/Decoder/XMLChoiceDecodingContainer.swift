@@ -96,11 +96,11 @@ struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol 
     public func nestedContainer<NestedKey>(
         keyedBy _: NestedKey.Type, forKey key: Key
     ) throws -> KeyedDecodingContainer<NestedKey> {
-        fatalError()
+        fatalError("Choice elements cannot produce a nested container.")
     }
 
     public func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
-        fatalError()
+        fatalError("Choice elements cannot produce a unkeyed nested container.")
     }
 
     public func superDecoder() throws -> Decoder {
