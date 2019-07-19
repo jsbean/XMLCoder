@@ -200,7 +200,6 @@ struct XMLKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol {
         keyedBy _: NestedKey.Type, forKey key: Key
     ) throws -> KeyedDecodingContainer<NestedKey> {
         #warning("Specialize XMLKeyedDecodingContainer.nestedSingleElementContainer")
-        print("XMLKeyedDecodingContainer.nestedSingleElementContainer")
         decoder.codingPath.append(key)
         defer { decoder.codingPath.removeLast() }
 

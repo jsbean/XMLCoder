@@ -25,7 +25,6 @@ struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol 
 
     /// Initializes `self` by referencing the given decoder and container.
     init(referencing decoder: XMLDecoderImplementation, wrapping container: SharedBox<ChoiceBox>) {
-        print("Single Element Container init: Key: \(container.unboxed.key)")
         self.decoder = decoder
 
         func mapKeys(
@@ -226,7 +225,6 @@ extension XMLChoiceDecodingContainer {
         _ type: T.Type,
         forKey key: Key
     ) throws -> T {
-        print("decode concrete: \(type) for key: \(key), reality: \(container.unboxed.element)")
         guard let strategy = self.decoder.nodeDecodings.last else {
             preconditionFailure(
                 """
@@ -272,15 +270,12 @@ extension XMLChoiceDecodingContainer {
         }
 
         guard let unwrapped = value else {
-            print("no value")
             throw DecodingError.valueNotFound(type, DecodingError.Context(
                 codingPath: decoder.codingPath,
                 debugDescription:
                 "Expected \(type) value but found null instead."
             ))
         }
-        print("value: \(value)")
-
         return unwrapped
     }
 

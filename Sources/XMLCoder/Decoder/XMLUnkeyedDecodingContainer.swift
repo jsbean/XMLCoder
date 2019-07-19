@@ -174,7 +174,6 @@ struct XMLUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     public mutating func nestedSingleElementContainer<NestedKey>(
         keyedBy _: NestedKey.Type
     ) throws -> KeyedDecodingContainer<NestedKey> {
-        print("XMLUnkeyedDecodingContainer.nestedSingleElementContainer")
         #warning("Specialize XMLUnkeyedDecoder.nestedSingleElementContainer implementation!")
         decoder.codingPath.append(XMLKey(index: currentIndex))
         defer { self.decoder.codingPath.removeLast() }
