@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Container specialized for decoding XML choice elements.
 struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol {
     typealias Key = K
 
@@ -82,7 +83,7 @@ struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol 
     }
 
     public func decode<T: Decodable>(_ type: T.Type, forKey key: Key) throws -> T {
-        guard container.withShared({ $0.key == key.stringValue }) else {
+        guard container.withShared({ $0.key == key.stringValue }), key is XMLChoiceKey else {
             throw DecodingError.typeMismatch(
                 at: codingPath,
                 expectation: type,
@@ -196,16 +197,6 @@ extension XMLChoiceDecodingContainer {
                 """
             )
         }
-        let elements = container
-            .withShared { choiceBox -> [KeyedBox.Element] in
-                if let unkeyed = choiceBox.element as? UnkeyedBox {
-                    return unkeyed
-                } else if let keyed = choiceBox.element as? KeyedBox {
-                    return keyed.elements[key.stringValue]
-                } else {
-                    return []
-                }
-        }
         decoder.codingPath.append(key)
         let nodeDecodings = decoder.options.nodeDecodingStrategy.nodeDecodings(
             forType: T.self,
@@ -216,28 +207,7 @@ extension XMLChoiceDecodingContainer {
             _ = decoder.nodeDecodings.removeLast()
             decoder.codingPath.removeLast()
         }
-        let box: Box = elements
-        let value: T?
-        if !(type is AnySequence.Type), let unkeyedBox = box as? UnkeyedBox,
-            let first = unkeyedBox.first {
-            value = try decoder.unbox(first)
-        } else {
-            value = try decoder.unbox(box)
-        }
-
-        if value == nil, let type = type as? AnyOptional.Type,
-            let result = type.init() as? T {
-            return result
-        }
-
-        guard let unwrapped = value else {
-            throw DecodingError.valueNotFound(type, DecodingError.Context(
-                codingPath: decoder.codingPath,
-                debugDescription:
-                "Expected \(type) value but found null instead."
-            ))
-        }
-        return unwrapped
+        return try decoder.unbox(container.withShared { $0.element })
     }
 
     private func _superDecoder(forKey key: CodingKey) throws -> Decoder {

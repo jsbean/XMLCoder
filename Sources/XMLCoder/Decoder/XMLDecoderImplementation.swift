@@ -127,10 +127,20 @@ class XMLDecoderImplementation: Decoder {
     /// - Returns: A `KeyedDecodingContainer` for an XML choice element.
     public func choiceContainer<Key>(keyedBy _: Key.Type) throws -> KeyedDecodingContainer<Key> {
         let topContainer = try self.topContainer()
-        guard
-            let keyed = topContainer as? SharedBox<KeyedBox>,
-            let choiceBox = ChoiceBox(keyed.withShared { $0 })
-        else {
+        let choiceBox: ChoiceBox?
+        switch topContainer {
+        case let singleElement as SingleElementBox:
+            choiceBox = ChoiceBox(singleElement)
+        case let keyed as SharedBox<KeyedBox>:
+            choiceBox = ChoiceBox(keyed.withShared { $0 })
+        default:
+            throw DecodingError.typeMismatch(
+                at: codingPath,
+                expectation: [String: Any].self,
+                reality: topContainer
+            )
+        }
+        guard let box = choiceBox else {
             throw DecodingError.typeMismatch(
                 at: codingPath,
                 expectation: [String: Any].self,
@@ -139,7 +149,7 @@ class XMLDecoderImplementation: Decoder {
         }
         let container = XMLChoiceDecodingContainer<Key>(
             referencing: self,
-            wrapping: SharedBox(choiceBox)
+            wrapping: SharedBox(box)
         )
         return KeyedDecodingContainer(container)
     }
@@ -404,21 +414,22 @@ extension XMLDecoderImplementation {
         return urlBox.unboxed
     }
 
-    func unbox<T: Decodable>(_ box: ChoiceBox) throws -> T {
-        return try unbox(KeyedBox(elements: KeyedStorage([(box.key, box.element)]), attributes: []))
-    }
-
     func unbox<T: Decodable>(_ box: SingleElementBox) throws -> T {
+        print("unbox single element box")
         do {
-            return try unbox(box.element)
+            let result: T = try unbox(box.element)
+            print("box.element success: \(result)")
+            return result
         } catch {
             // FIXME: Find a more economical way to unbox a `SingleElementBox` !
-            return try unbox(
+            let result: T = try unbox(
                 KeyedBox(
                     elements: KeyedStorage([(box.key, box.element)]),
                     attributes: []
                 )
             )
+            print("bundled up success: \(result)")
+            return result
         }
     }
 
@@ -444,8 +455,6 @@ extension XMLDecoderImplementation {
             decoded = value
         } else if let singleElementBox = box as? SingleElementBox {
             decoded = try unbox(singleElementBox)
-        } else if let choiceBox = box as? ChoiceBox {
-            decoded = try unbox(choiceBox)
         } else {
             storage.push(container: box)
             defer {
