@@ -197,10 +197,10 @@ extension XMLChoiceDecodingContainer {
             )
         }
         let elements = container
-            .withShared { singleElementBox -> [KeyedBox.Element] in
-                if let unkeyed = singleElementBox.element as? UnkeyedBox {
+            .withShared { choiceBox -> [KeyedBox.Element] in
+                if let unkeyed = choiceBox.element as? UnkeyedBox {
                     return unkeyed
-                } else if let keyed = singleElementBox.element as? KeyedBox {
+                } else if let keyed = choiceBox.element as? KeyedBox {
                     return keyed.elements[key.stringValue]
                 } else {
                     return []
