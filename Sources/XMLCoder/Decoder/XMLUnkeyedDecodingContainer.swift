@@ -124,6 +124,58 @@ struct XMLUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     public mutating func nestedContainer<NestedKey>(
         keyedBy _: NestedKey.Type
     ) throws -> KeyedDecodingContainer<NestedKey> {
+        if NestedKey.self is XMLChoiceKey.Type {
+            return try nestedSingleElementContainer(keyedBy: NestedKey.self)
+        } else {
+            return try nestedKeyedContainer(keyedBy: NestedKey.self)
+        }
+    }
+
+    public mutating func nestedKeyedContainer<NestedKey>(
+        keyedBy _: NestedKey.Type
+    ) throws -> KeyedDecodingContainer<NestedKey>
+    {
+        decoder.codingPath.append(XMLKey(index: currentIndex))
+        defer { self.decoder.codingPath.removeLast() }
+
+        guard !isAtEnd else {
+            throw DecodingError.valueNotFound(
+                KeyedDecodingContainer<NestedKey>.self, DecodingError.Context(
+                    codingPath: codingPath,
+                    debugDescription: "Cannot get nested keyed container -- unkeyed container is at end."
+                )
+            )
+        }
+
+        let value = self.container.withShared { unkeyedBox in
+            unkeyedBox[self.currentIndex]
+        }
+        guard !value.isNull else {
+            throw DecodingError.valueNotFound(KeyedDecodingContainer<NestedKey>.self, DecodingError.Context(
+                codingPath: codingPath,
+                debugDescription: "Cannot get keyed decoding container -- found null value instead."
+            ))
+        }
+
+        guard let keyedContainer = value as? SharedBox<KeyedBox> else {
+            throw DecodingError.typeMismatch(at: codingPath,
+                                             expectation: [String: Any].self,
+                                             reality: value)
+        }
+
+        currentIndex += 1
+        let container = XMLKeyedDecodingContainer<NestedKey>(
+            referencing: decoder,
+            wrapping: keyedContainer
+        )
+        return KeyedDecodingContainer(container)
+    }
+
+    public mutating func nestedSingleElementContainer<NestedKey>(
+        keyedBy _: NestedKey.Type
+    ) throws -> KeyedDecodingContainer<NestedKey> {
+        print("XMLUnkeyedDecodingContainer.nestedSingleElementContainer")
+        #warning("Specialize XMLUnkeyedDecoder.nestedSingleElementContainer implementation!")
         decoder.codingPath.append(XMLKey(index: currentIndex))
         defer { self.decoder.codingPath.removeLast() }
 

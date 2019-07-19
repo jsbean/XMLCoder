@@ -125,6 +125,8 @@ class XMLDecoderImplementation: Decoder {
     }
 
     public func singleElementContainer<Key>(keyedBy _: Key.Type) throws -> KeyedDecodingContainer<Key> {
+        #warning("Specialize XMLDecoderImplementation.singleElementContainer implementation!")
+        print("XMLDecoderImplementation.singleElementContainer")
         let topContainer = try self.topContainer()
 
         switch topContainer {
