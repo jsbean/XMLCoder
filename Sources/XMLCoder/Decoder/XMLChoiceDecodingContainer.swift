@@ -125,13 +125,16 @@ struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol 
         decoder.codingPath.append(key)
         defer { decoder.codingPath.removeLast() }
         guard let unkeyedElement = container.withShared({ $0.element }) as? UnkeyedBox else {
-            fatalError("Throw error instead")
+            throw DecodingError.typeMismatch(
+                at: codingPath,
+                expectation: UnkeyedBox.self,
+                reality: container
+            )
         }
         return XMLUnkeyedDecodingContainer(
             referencing: decoder,
             wrapping: SharedBox(unkeyedElement)
         )
-
     }
 
     public func superDecoder() throws -> Decoder {
@@ -193,7 +196,6 @@ extension XMLChoiceDecodingContainer {
                 """
             )
         }
-
         let elements = container
             .withShared { singleElementBox -> [KeyedBox.Element] in
                 if let unkeyed = singleElementBox.element as? UnkeyedBox {
@@ -204,7 +206,6 @@ extension XMLChoiceDecodingContainer {
                     return []
                 }
         }
-
         decoder.codingPath.append(key)
         let nodeDecodings = decoder.options.nodeDecodingStrategy.nodeDecodings(
             forType: T.self,
