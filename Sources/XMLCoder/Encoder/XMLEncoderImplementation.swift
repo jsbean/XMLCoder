@@ -65,7 +65,7 @@ class XMLEncoderImplementation: Encoder {
     
     public func container<Key>(keyedBy _: Key.Type) -> KeyedEncodingContainer<Key> {
         if Key.self is XMLChoiceKey.Type {
-            return choiceContainer(keyedBy: Key.self)
+            return singleElementContainer(keyedBy: Key.self)
         } else {
             return keyedContainer(keyedBy: Key.self)
         }
@@ -89,7 +89,7 @@ class XMLEncoderImplementation: Encoder {
         return KeyedEncodingContainer(container)
     }
     
-    public func choiceContainer<Key>(keyedBy _: Key.Type) -> KeyedEncodingContainer<Key> {
+    public func singleElementContainer<Key>(keyedBy _: Key.Type) -> KeyedEncodingContainer<Key> {
         let topContainer: SharedBox<SingleElementBox>
         if canEncodeNewValue {
             // We haven't yet pushed a container at this level; do so here.
