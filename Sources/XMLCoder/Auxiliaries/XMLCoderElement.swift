@@ -52,6 +52,7 @@ struct XMLCoderElement: Equatable {
     }
 
     func transformToBoxTree() -> Box {
+        // Choices will present as having no attributes or elements, but will have a key and value.
         if let value = value, self.attributes.isEmpty, self.elements.isEmpty {
             return ChoiceBox(key: key, element: StringBox(value))
         }
