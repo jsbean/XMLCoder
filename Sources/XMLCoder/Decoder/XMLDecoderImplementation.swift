@@ -404,6 +404,10 @@ extension XMLDecoderImplementation {
         return urlBox.unboxed
     }
 
+    func unbox<T: Decodable>(_ box: ChoiceBox) throws -> T {
+        return try unbox(KeyedBox(elements: KeyedStorage([(box.key, box.element)]), attributes: []))
+    }
+
     func unbox<T: Decodable>(_ box: SingleElementBox) throws -> T {
         do {
             return try unbox(box.element)
@@ -440,6 +444,8 @@ extension XMLDecoderImplementation {
             decoded = value
         } else if let singleElementBox = box as? SingleElementBox {
             decoded = try unbox(singleElementBox)
+        } else if let choiceBox = box as? ChoiceBox {
+            decoded = try unbox(choiceBox)
         } else {
             storage.push(container: box)
             defer {
