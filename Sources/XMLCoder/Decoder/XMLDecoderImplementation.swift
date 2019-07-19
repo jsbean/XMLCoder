@@ -129,7 +129,7 @@ class XMLDecoderImplementation: Decoder {
         let topContainer = try self.topContainer()
         guard
             let keyed = topContainer as? SharedBox<KeyedBox>,
-            let singleElement = SingleElementBox(keyed.withShared { $0 })
+            let choiceBox = ChoiceBox(keyed.withShared { $0 })
         else {
             throw DecodingError.typeMismatch(
                 at: codingPath,
@@ -139,7 +139,7 @@ class XMLDecoderImplementation: Decoder {
         }
         let container = XMLChoiceDecodingContainer<Key>(
             referencing: self,
-            wrapping: SharedBox(singleElement)
+            wrapping: SharedBox(choiceBox)
         )
         return KeyedDecodingContainer(container)
     }

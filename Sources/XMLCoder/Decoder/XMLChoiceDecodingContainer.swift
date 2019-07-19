@@ -16,7 +16,7 @@ struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol 
     private let decoder: XMLDecoderImplementation
 
     /// A reference to the container we're reading from.
-    private let container: SharedBox<SingleElementBox>
+    private let container: SharedBox<ChoiceBox>
 
     /// The path of coding keys taken to get to this point in decoding.
     public private(set) var codingPath: [CodingKey]
@@ -24,28 +24,19 @@ struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol 
     // MARK: - Initialization
 
     /// Initializes `self` by referencing the given decoder and container.
-    init(referencing decoder: XMLDecoderImplementation, wrapping container: SharedBox<SingleElementBox>) {
+    init(referencing decoder: XMLDecoderImplementation, wrapping container: SharedBox<ChoiceBox>) {
         print("Single Element Container init: Key: \(container.unboxed.key)")
         self.decoder = decoder
 
         func mapKeys(
-            _ container: SharedBox<SingleElementBox>, closure: (String) -> String
-        ) -> SharedBox<SingleElementBox> {
-            let attributes = container.withShared { singleElementBox in
-                singleElementBox.attributes.map { (closure($0), $1) }
-            }
-            container.withShared { singleElementBox in
-                //keyedBox.elements.map { (closure($0), $1) }
-                singleElementBox.key = closure(singleElementBox.key)
-            }
-            //let keyedBox = KeyedBox(elements: elements, attributes: attributes)
-            let singleElementBox = SingleElementBox(
-                attributes: .init(),
-                key: closure(container.withShared { $0.key }),
-                element: container.withShared { $0.element }
+            _ container: SharedBox<ChoiceBox>, closure: (String) -> String
+        ) -> SharedBox<ChoiceBox> {
+            return SharedBox(
+                ChoiceBox(
+                    key: closure(container.withShared { $0.key }),
+                    element: container.withShared { $0.element }
+                )
             )
-
-            return SharedBox(singleElementBox)
         }
 
         switch decoder.options.keyDecodingStrategy {
@@ -150,12 +141,12 @@ struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol 
         let value = container.withShared { $0.element }
         let container: XMLChoiceDecodingContainer<NestedKey>
 
-        if let keyedContainer = value as? SharedBox<SingleElementBox> {
+        if let keyedContainer = value as? SharedBox<ChoiceBox> {
             container = XMLChoiceDecodingContainer<NestedKey>(
                 referencing: decoder,
                 wrapping: keyedContainer
             )
-        } else if let keyedContainer = value as? SingleElementBox {
+        } else if let keyedContainer = value as? ChoiceBox {
             container = XMLChoiceDecodingContainer<NestedKey>(
                 referencing: decoder,
                 wrapping: SharedBox(keyedContainer)
@@ -248,34 +239,13 @@ extension XMLChoiceDecodingContainer {
             .withShared { singleElementBox -> [KeyedBox.Element] in
                 dump(singleElementBox)
                 if let unkeyed = singleElementBox.element as? UnkeyedBox {
-                    print("element is unkeyed box: \(unkeyed)")
                     return unkeyed
                 } else if let keyed = singleElementBox.element as? KeyedBox {
-                    print("element is keyed box: \(keyed)")
                     return keyed.elements[key.stringValue]
                 } else {
-
                     return []
                 }
-//                if ["value", ""].contains(key.stringValue) {
-//                    let keyString = key.stringValue.isEmpty ? "value" : key.stringValue
-//                    let value = keyedBox.elements[keyString]
-//                    if !value.isEmpty {
-//                        return value
-//                    } else if let value = keyedBox.value {
-//                        return [value]
-//                    } else {
-//                        return []
-//                    }
-//                } else {
-//                    return keyedBox.elements[key.stringValue]
-//                }
         }
-
-        let attributes = container.withShared { keyedBox in
-            keyedBox.attributes[key.stringValue]
-        }
-        print("Attributes should be empty?: \(attributes.isEmpty)")
 
         decoder.codingPath.append(key)
         let nodeDecodings = decoder.options.nodeDecodingStrategy.nodeDecodings(
@@ -287,47 +257,7 @@ extension XMLChoiceDecodingContainer {
             _ = decoder.nodeDecodings.removeLast()
             decoder.codingPath.removeLast()
         }
-        let box: Box
-
-        // You can't decode sequences from attributes, but other strategies
-        // need special handling for empty sequences.
-        if strategy(key) != .attribute && elements.isEmpty,
-            let empty = (type as? AnySequence.Type)?.init() as? T {
-            return empty
-        }
-
-        switch strategy(key) {
-        case .attribute:
-            guard
-                let attributeBox = attributes.first
-                else {
-                    throw DecodingError.keyNotFound(key, DecodingError.Context(
-                        codingPath: decoder.codingPath,
-                        debugDescription:
-                        """
-                        No attribute found for key \(_errorDescription(of: key)).
-                        """
-                    ))
-            }
-            box = attributeBox
-        case .element:
-            box = elements
-        case .elementOrAttribute:
-            guard
-                let anyBox = elements.isEmpty ? attributes.first : elements as Box?
-                else {
-                    throw DecodingError.keyNotFound(key, DecodingError.Context(
-                        codingPath: decoder.codingPath,
-                        debugDescription:
-                        """
-                        No attribute or element found for key \
-                        \(_errorDescription(of: key)).
-                        """
-                    ))
-            }
-            box = anyBox
-        }
-
+        let box: Box = elements
         let value: T?
         if !(type is AnySequence.Type), let unkeyedBox = box as? UnkeyedBox,
             let first = unkeyedBox.first {
@@ -357,11 +287,6 @@ extension XMLChoiceDecodingContainer {
     private func _superDecoder(forKey key: CodingKey) throws -> Decoder {
         decoder.codingPath.append(key)
         defer { decoder.codingPath.removeLast() }
-
-        let attributes = container.withShared { keyedBox in
-            keyedBox.attributes[key.stringValue]
-        }
-
         let box: Box = container.withShared { $0.element }
         return XMLDecoderImplementation(
             referencing: box,
