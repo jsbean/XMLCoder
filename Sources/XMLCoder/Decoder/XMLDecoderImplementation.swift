@@ -134,7 +134,8 @@ class XMLDecoderImplementation: Decoder {
                 reality: topContainer
             )
         }
-        return KeyedDecodingContainer(XMLKeyedDecodingContainer(referencing: self, wrapping: keyed))
+        let container = XMLSingleElementDecodingContainer<Key>(referencing: self, wrapping: keyed)
+        return KeyedDecodingContainer(container)
     }
 
     public func unkeyedContainer() throws -> UnkeyedDecodingContainer {
