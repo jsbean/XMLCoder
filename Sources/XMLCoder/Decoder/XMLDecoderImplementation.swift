@@ -72,7 +72,7 @@ class XMLDecoderImplementation: Decoder {
 
     public func container<Key>(keyedBy keyType: Key.Type) throws -> KeyedDecodingContainer<Key> {
         if Key.self is XMLChoiceKey.Type {
-            return try singleElementContainer(keyedBy: keyType)
+            return try choiceContainer(keyedBy: keyType)
         } else {
             return try keyedContainer(keyedBy: keyType)
         }
@@ -125,7 +125,7 @@ class XMLDecoderImplementation: Decoder {
     }
 
     /// - Returns: A `KeyedDecodingContainer` for an XML choice element.
-    public func singleElementContainer<Key>(keyedBy _: Key.Type) throws -> KeyedDecodingContainer<Key> {
+    public func choiceContainer<Key>(keyedBy _: Key.Type) throws -> KeyedDecodingContainer<Key> {
         let topContainer = try self.topContainer()
         guard
             let keyed = topContainer as? SharedBox<KeyedBox>,

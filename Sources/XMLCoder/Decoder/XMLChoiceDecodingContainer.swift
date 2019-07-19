@@ -37,7 +37,7 @@ struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol 
                 )
             )
         }
-
+        // FIXME: Keep DRY from XMLKeyedDecodingContainer.init
         switch decoder.options.keyDecodingStrategy {
         case .useDefaultKeys:
             self.container = container
@@ -95,16 +95,6 @@ struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol 
     public func nestedContainer<NestedKey>(
         keyedBy keyType: NestedKey.Type, forKey key: Key
     ) throws -> KeyedDecodingContainer<NestedKey> {
-        if keyType.self is XMLChoiceKey.Type {
-            return try nestedSingleElementContainer(keyedBy: keyType, forKey: key)
-        } else {
-            return try nestedKeyedContainer(keyedBy: keyType, forKey: key)
-        }
-    }
-
-    public func nestedKeyedContainer<NestedKey>(
-        keyedBy _: NestedKey.Type, forKey key: Key
-    ) throws -> KeyedDecodingContainer<NestedKey> {
         decoder.codingPath.append(key)
         defer { decoder.codingPath.removeLast() }
 
@@ -118,35 +108,6 @@ struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol 
             )
         } else if let keyedContainer = value as? KeyedBox {
             container = XMLKeyedDecodingContainer<NestedKey>(
-                referencing: decoder,
-                wrapping: SharedBox(keyedContainer)
-            )
-        } else {
-            throw DecodingError.typeMismatch(
-                at: codingPath,
-                expectation: [String: Any].self,
-                reality: value
-            )
-        }
-        return KeyedDecodingContainer(container)
-    }
-
-    public func nestedSingleElementContainer<NestedKey>(
-        keyedBy _: NestedKey.Type, forKey key: Key
-    ) throws -> KeyedDecodingContainer<NestedKey> {
-        decoder.codingPath.append(key)
-        defer { decoder.codingPath.removeLast() }
-
-        let value = container.withShared { $0.element }
-        let container: XMLChoiceDecodingContainer<NestedKey>
-
-        if let keyedContainer = value as? SharedBox<ChoiceBox> {
-            container = XMLChoiceDecodingContainer<NestedKey>(
-                referencing: decoder,
-                wrapping: keyedContainer
-            )
-        } else if let keyedContainer = value as? ChoiceBox {
-            container = XMLChoiceDecodingContainer<NestedKey>(
                 referencing: decoder,
                 wrapping: SharedBox(keyedContainer)
             )
