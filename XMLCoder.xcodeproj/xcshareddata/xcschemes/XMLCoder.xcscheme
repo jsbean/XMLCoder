@@ -37,6 +37,11 @@
                BlueprintName = "XMLCoderTests"
                ReferencedContainer = "container:XMLCoder.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "BenchmarkTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>
