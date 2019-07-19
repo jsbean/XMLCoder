@@ -41,14 +41,22 @@ extension IntOrString: Codable {
 
 class SimpleChoiceTests: XCTestCase {
     func testIntOrStringIntDecoding() throws {
-        let xml = "<int>42</int>"
+        let xml = """
+        <container>
+            <int>42</int>
+        </container>
+        """
         let result = try XMLDecoder().decode(IntOrString.self, from: xml.data(using: .utf8)!)
         let expected = IntOrString.int(42)
         XCTAssertEqual(result, expected)
     }
 
     func testIntOrStringStringDecoding() throws {
-        let xml = "<string>forty-two</string>"
+        let xml = """
+        <container>
+            <string>forty-two</string>"
+        </container>
+        """
         let result = try XMLDecoder().decode(IntOrString.self, from: xml.data(using: .utf8)!)
         let expected = IntOrString.string("forty-two")
         XCTAssertEqual(result, expected)
