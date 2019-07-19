@@ -93,7 +93,7 @@ struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol 
     }
 
     public func nestedContainer<NestedKey>(
-        keyedBy keyType: NestedKey.Type, forKey key: Key
+        keyedBy _: NestedKey.Type, forKey key: Key
     ) throws -> KeyedDecodingContainer<NestedKey> {
         decoder.codingPath.append(key)
         defer { decoder.codingPath.removeLast() }
