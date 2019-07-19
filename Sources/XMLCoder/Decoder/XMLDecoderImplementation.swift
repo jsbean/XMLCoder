@@ -127,14 +127,20 @@ class XMLDecoderImplementation: Decoder {
     /// - Returns: A `KeyedDecodingContainer` for an XML choice element.
     public func singleElementContainer<Key>(keyedBy _: Key.Type) throws -> KeyedDecodingContainer<Key> {
         let topContainer = try self.topContainer()
-        guard let keyed = topContainer as? SharedBox<KeyedBox> else {
+        guard
+            let keyed = topContainer as? SharedBox<KeyedBox>,
+            let singleElement = SingleElementBox(keyed.withShared { $0 })
+        else {
             throw DecodingError.typeMismatch(
                 at: codingPath,
                 expectation: [String: Any].self,
                 reality: topContainer
             )
         }
-        let container = XMLSingleElementDecodingContainer<Key>(referencing: self, wrapping: keyed)
+        let container = XMLSingleElementDecodingContainer<Key>(
+            referencing: self,
+            wrapping: SharedBox(singleElement)
+        )
         return KeyedDecodingContainer(container)
     }
 
@@ -160,10 +166,12 @@ class XMLDecoderImplementation: Decoder {
         case let keyed as SharedBox<KeyedBox>:
             return XMLUnkeyedDecodingContainer(
                 referencing: self,
-                wrapping: SharedBox(keyed.withShared { $0.elements.map { key, box in
-                    SingleElementBox(attributes: SingleElementBox.Attributes(), key: key, element: box)
+                wrapping: SharedBox(
+                    keyed.withShared { $0.elements.map { key, box in
+                        SingleElementBox(attributes: .init(), key: key, element: box)
                     }
-                })
+                }
+                )
             )
         default:
             throw DecodingError.typeMismatch(

@@ -60,10 +60,10 @@ extension Entry: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         do {
             self = .run(try container.decode(Run.self, forKey: .run))
-        } catch DecodingError.keyNotFound {
+        } catch {
             do {
                 self = .properties(try container.decode(Properties.self, forKey: .properties))
-            } catch DecodingError.keyNotFound {
+            } catch {
                 self = .br(try container.decode(Break.self, forKey: .br))
             }
         }
