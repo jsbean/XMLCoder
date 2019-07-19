@@ -129,16 +129,12 @@ class XMLDecoderImplementation: Decoder {
         let topContainer = try self.topContainer()
         let choiceBox: ChoiceBox?
         switch topContainer {
-        case let singleElement as SingleElementBox:
-            choiceBox = ChoiceBox(singleElement)
+        case let choice as ChoiceBox:
+            choiceBox = choice
         case let keyed as SharedBox<KeyedBox>:
             choiceBox = ChoiceBox(keyed.withShared { $0 })
         default:
-            throw DecodingError.typeMismatch(
-                at: codingPath,
-                expectation: [String: Any].self,
-                reality: topContainer
-            )
+            choiceBox = nil
         }
         guard let box = choiceBox else {
             throw DecodingError.typeMismatch(
@@ -174,7 +170,7 @@ class XMLDecoderImplementation: Decoder {
         case let unkeyed as SharedBox<UnkeyedBox>:
             return XMLUnkeyedDecodingContainer(referencing: self, wrapping: unkeyed)
         case let keyed as SharedBox<KeyedBox>:
-            return XMLUnkeyedDecodingContainer(
+            return XMLUnkeyedSingleElementDecodingContainer(
                 referencing: self,
                 wrapping: SharedBox(
                     keyed.withShared { $0.elements.map { key, box in
@@ -414,26 +410,8 @@ extension XMLDecoderImplementation {
         return urlBox.unboxed
     }
 
-    func unbox<T: Decodable>(_ box: SingleElementBox) throws -> T {
-        print("unbox single element box")
-        do {
-            let result: T = try unbox(box.element)
-            print("box.element success: \(result)")
-            return result
-        } catch {
-            // FIXME: Find a more economical way to unbox a `SingleElementBox` !
-            let result: T = try unbox(
-                KeyedBox(
-                    elements: KeyedStorage([(box.key, box.element)]),
-                    attributes: []
-                )
-            )
-            print("bundled up success: \(result)")
-            return result
-        }
-    }
-
     func unbox<T: Decodable>(_ box: Box) throws -> T {
+
         let decoded: T?
         let type = T.self
 
@@ -453,8 +431,6 @@ extension XMLDecoderImplementation {
             type == String.self || type == NSString.self,
             let value = (try unbox(box) as String) as? T {
             decoded = value
-        } else if let singleElementBox = box as? SingleElementBox {
-            decoded = try unbox(singleElementBox)
         } else {
             storage.push(container: box)
             defer {

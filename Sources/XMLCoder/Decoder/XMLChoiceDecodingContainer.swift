@@ -96,46 +96,11 @@ struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol 
     public func nestedContainer<NestedKey>(
         keyedBy _: NestedKey.Type, forKey key: Key
     ) throws -> KeyedDecodingContainer<NestedKey> {
-        decoder.codingPath.append(key)
-        defer { decoder.codingPath.removeLast() }
-
-        let value = container.withShared { $0.element }
-        let container: XMLKeyedDecodingContainer<NestedKey>
-
-        if let keyedContainer = value as? SharedBox<KeyedBox> {
-            container = XMLKeyedDecodingContainer<NestedKey>(
-                referencing: decoder,
-                wrapping: keyedContainer
-            )
-        } else if let keyedContainer = value as? KeyedBox {
-            container = XMLKeyedDecodingContainer<NestedKey>(
-                referencing: decoder,
-                wrapping: SharedBox(keyedContainer)
-            )
-        } else {
-            throw DecodingError.typeMismatch(
-                at: codingPath,
-                expectation: [String: Any].self,
-                reality: value
-            )
-        }
-        return KeyedDecodingContainer(container)
+        fatalError()
     }
 
     public func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
-        decoder.codingPath.append(key)
-        defer { decoder.codingPath.removeLast() }
-        guard let unkeyedElement = container.withShared({ $0.element }) as? UnkeyedBox else {
-            throw DecodingError.typeMismatch(
-                at: codingPath,
-                expectation: UnkeyedBox.self,
-                reality: container
-            )
-        }
-        return XMLUnkeyedDecodingContainer(
-            referencing: decoder,
-            wrapping: SharedBox(unkeyedElement)
-        )
+        fatalError()
     }
 
     public func superDecoder() throws -> Decoder {
