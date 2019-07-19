@@ -122,7 +122,7 @@ struct XMLUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     }
 
     public mutating func nestedContainer<NestedKey>(
-        keyedBy nestedType: NestedKey.Type
+        keyedBy _: NestedKey.Type
     ) throws -> KeyedDecodingContainer<NestedKey> {
         decoder.codingPath.append(XMLKey(index: currentIndex))
         defer { self.decoder.codingPath.removeLast() }
