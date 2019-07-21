@@ -72,8 +72,10 @@ class XMLDecoderImplementation: Decoder {
 
     public func container<Key>(keyedBy keyType: Key.Type) throws -> KeyedDecodingContainer<Key> {
         if Key.self is XMLChoiceKey.Type {
+            print("choice route")
             return try choiceContainer(keyedBy: keyType)
         } else {
+            print("keyed route")
             return try keyedContainer(keyedBy: keyType)
         }
     }
@@ -414,7 +416,9 @@ extension XMLDecoderImplementation {
 
         let decoded: T?
         let type = T.self
-
+        
+        print("test", box)
+        
         if type == Date.self || type == NSDate.self {
             let date: Date = try unbox(box)
             decoded = date as? T
@@ -436,7 +440,7 @@ extension XMLDecoderImplementation {
             defer {
                 storage.popContainer()
             }
-
+            
             do {
                 decoded = try type.init(from: self)
             } catch {

@@ -191,6 +191,7 @@ class NestedChoiceTests: XCTestCase {
         let xml = """
          <container>
              <p>
+                 <br></br>
                  <run>
                      <id>1518</id>
                      <text>I am answering it again.</text>
@@ -205,6 +206,7 @@ class NestedChoiceTests: XCTestCase {
                      <id>1519</id>
                      <text>I am answering it again.</text>
                  </run>
+                 <br />
              </p>
          </container>
          """
@@ -213,6 +215,7 @@ class NestedChoiceTests: XCTestCase {
             paragraphs: [
                 Paragraph(
                     entries: [
+                        .br(Break()),
                         .run(Run(id: 1518, text: "I am answering it again.")),
                         .properties(Properties(id: 431, title: "A Word About Wake Times")),
                     ]
@@ -220,6 +223,7 @@ class NestedChoiceTests: XCTestCase {
                 Paragraph(
                     entries: [
                         .run(Run(id: 1519, text: "I am answering it again.")),
+                        .br(Break()),
                     ]
                 )
             ]
