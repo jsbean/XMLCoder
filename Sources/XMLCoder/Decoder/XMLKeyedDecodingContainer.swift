@@ -105,8 +105,15 @@ struct XMLKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol {
     }
 
     public func decodeNil(forKey key: Key) throws -> Bool {
-        let elements = container.withShared { keyedBox in
-            keyedBox.elements[key.stringValue]
+        //        FIXME: DRY out
+        let elements = container.withShared { keyedBox -> [Box] in
+            return keyedBox.elements[key.stringValue].map {
+                if let choice = $0 as? ChoiceBox {
+                    return choice.element
+                } else {
+                    return $0
+                }
+            }
         }
 
         let attributes = container.withShared { keyedBox in
@@ -268,7 +275,13 @@ extension XMLKeyedDecodingContainer {
                     let keyString = key.stringValue.isEmpty ? "value" : key.stringValue
                     let value = keyedBox.elements[keyString]
                     if !value.isEmpty {
-                        return value
+                        return value.map {
+                            if let choice = $0 as? ChoiceBox {
+                                return choice.element
+                            } else {
+                                return $0
+                            }
+                        }
                     } else if let value = keyedBox.value {
                         return [value]
                     } else {
