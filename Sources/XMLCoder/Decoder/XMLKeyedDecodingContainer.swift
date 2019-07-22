@@ -277,7 +277,6 @@ extension XMLKeyedDecodingContainer {
                 } else {
                     return keyedBox.elements[key.stringValue].map {
                         if let choice = $0 as? ChoiceBox {
-                            print(choice.element)
                             return choice.element
                         } else {
                             return $0
