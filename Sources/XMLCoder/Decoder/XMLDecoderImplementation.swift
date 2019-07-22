@@ -419,10 +419,9 @@ extension XMLDecoderImplementation {
     }
 
     func unbox<T: Decodable>(_ box: Box) throws -> T {
-        
         let decoded: T?
         let type = T.self
-        
+
         if type == Date.self || type == NSDate.self {
             let date: Date = try unbox(box)
             decoded = date as? T
@@ -444,7 +443,7 @@ extension XMLDecoderImplementation {
             defer {
                 storage.popContainer()
             }
-            
+
             do {
                 decoded = try type.init(from: self)
             } catch {
