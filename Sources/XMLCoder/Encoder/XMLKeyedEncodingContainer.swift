@@ -174,19 +174,19 @@ struct XMLKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
         keyedBy _: NestedKey.Type,
         forKey key: Key
         ) -> KeyedEncodingContainer<NestedKey> {
-        let sharedSingleElement = SharedBox(SingleElementBox())
+        let sharedChoice = SharedBox(ChoiceBox())
         
         self.container.withShared { container in
-            container.elements.append(sharedSingleElement, at: _converted(key).stringValue)
+            container.elements.append(sharedChoice, at: _converted(key).stringValue)
         }
         
         codingPath.append(key)
         defer { self.codingPath.removeLast() }
         
-        let container = XMLSingleElementEncodingContainer<NestedKey>(
+        let container = XMLChoiceEncodingContainer<NestedKey>(
             referencing: encoder,
             codingPath: codingPath,
-            wrapping: sharedSingleElement
+            wrapping: sharedChoice
         )
         return KeyedEncodingContainer(container)
     }
