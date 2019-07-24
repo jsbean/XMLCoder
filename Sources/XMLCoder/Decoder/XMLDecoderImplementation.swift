@@ -93,6 +93,15 @@ class XMLDecoderImplementation: Decoder {
                     """
                 )
             )
+        case let singleElement as SingleElementBox:
+            precondition(singleElement.element.isNull)
+            return KeyedDecodingContainer(XMLKeyedDecodingContainer<Key>(
+                referencing: self,
+                wrapping: SharedBox(KeyedBox(
+                    elements: KeyedStorage([(singleElement.key, NullBox())]),
+                    attributes: KeyedStorage()
+                ))
+            ))
         case let string as StringBox:
             return KeyedDecodingContainer(XMLKeyedDecodingContainer<Key>(
                 referencing: self,
@@ -131,6 +140,8 @@ class XMLDecoderImplementation: Decoder {
         switch topContainer {
         case let choice as ChoiceBox:
             choiceBox = choice
+        case let singleElement as SingleElementBox:
+            choiceBox = ChoiceBox(singleElement)
         case let keyed as SharedBox<KeyedBox>:
             choiceBox = ChoiceBox(keyed.withShared { $0 })
         default:
@@ -411,7 +422,6 @@ extension XMLDecoderImplementation {
     }
 
     func unbox<T: Decodable>(_ box: Box) throws -> T {
-
         let decoded: T?
         let type = T.self
 
