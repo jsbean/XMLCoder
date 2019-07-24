@@ -94,6 +94,7 @@ class XMLDecoderImplementation: Decoder {
                 )
             )
         case let choice as ChoiceBox:
+            precondition(choice.element.isNull)
             return KeyedDecodingContainer(XMLKeyedDecodingContainer<Key>(
                 referencing: self,
                 wrapping: SharedBox(KeyedBox(
