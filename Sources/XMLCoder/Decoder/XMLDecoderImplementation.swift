@@ -178,7 +178,7 @@ class XMLDecoderImplementation: Decoder {
         case let unkeyed as SharedBox<UnkeyedBox>:
             return XMLUnkeyedDecodingContainer(referencing: self, wrapping: unkeyed)
         case let keyed as SharedBox<KeyedBox>:
-            return XMLUnkeyedSingleElementDecodingContainer(
+            return XMLUnkeyedDecodingContainer(
                 referencing: self,
                 wrapping: SharedBox(
                     keyed.withShared { $0.elements.map { key, box in
