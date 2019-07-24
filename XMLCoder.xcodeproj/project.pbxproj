@@ -39,8 +39,9 @@
 		B3BE1D652202CB7200259831 /* SingleValueEncodingContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BE1D642202CB7200259831 /* SingleValueEncodingContainer.swift */; };
 		B3BE1D682202CBF800259831 /* XMLDecoderImplementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BE1D662202CBF800259831 /* XMLDecoderImplementation.swift */; };
 		B3BE1D692202CBF800259831 /* SingleValueDecodingContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BE1D672202CBF800259831 /* SingleValueDecodingContainer.swift */; };
+		B50E7B4122E78FE1009D37E4 /* NestedAttributeChoiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50E7B4022E78FE1009D37E4 /* NestedAttributeChoiceTests.swift */; };
 		B54B122E22DF916F0014109D /* XMLChoiceKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54B122D22DF916F0014109D /* XMLChoiceKey.swift */; };
-		B54B123022DF921B0014109D /* XMLSingleElementEncodingContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54B122F22DF921B0014109D /* XMLSingleElementEncodingContainer.swift */; };
+		B54B123022DF921B0014109D /* XMLChoiceEncodingContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54B122F22DF921B0014109D /* XMLChoiceEncodingContainer.swift */; };
 		BF63EF0021CCDED2001D38C5 /* XMLStackParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF63EEFF21CCDED2001D38C5 /* XMLStackParserTests.swift */; };
 		BF63EF0621CD7A74001D38C5 /* URLBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF63EF0521CD7A74001D38C5 /* URLBox.swift */; };
 		BF63EF0821CD7AF8001D38C5 /* URLBoxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF63EF0721CD7AF8001D38C5 /* URLBoxTests.swift */; };
@@ -170,8 +171,9 @@
 		B3BE1D642202CB7200259831 /* SingleValueEncodingContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleValueEncodingContainer.swift; sourceTree = "<group>"; };
 		B3BE1D662202CBF800259831 /* XMLDecoderImplementation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLDecoderImplementation.swift; sourceTree = "<group>"; };
 		B3BE1D672202CBF800259831 /* SingleValueDecodingContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleValueDecodingContainer.swift; sourceTree = "<group>"; };
+		B50E7B4022E78FE1009D37E4 /* NestedAttributeChoiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedAttributeChoiceTests.swift; sourceTree = "<group>"; };
 		B54B122D22DF916F0014109D /* XMLChoiceKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLChoiceKey.swift; sourceTree = "<group>"; };
-		B54B122F22DF921B0014109D /* XMLSingleElementEncodingContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLSingleElementEncodingContainer.swift; sourceTree = "<group>"; };
+		B54B122F22DF921B0014109D /* XMLChoiceEncodingContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLChoiceEncodingContainer.swift; sourceTree = "<group>"; };
 		BF63EEFF21CCDED2001D38C5 /* XMLStackParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLStackParserTests.swift; sourceTree = "<group>"; };
 		BF63EF0521CD7A74001D38C5 /* URLBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBox.swift; sourceTree = "<group>"; };
 		BF63EF0721CD7AF8001D38C5 /* URLBoxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBoxTests.swift; sourceTree = "<group>"; };
@@ -395,7 +397,7 @@
 				B3BE1D622202CB1400259831 /* XMLEncoderImplementation.swift */,
 				OBJ_18 /* XMLEncodingStorage.swift */,
 				OBJ_19 /* XMLKeyedEncodingContainer.swift */,
-				B54B122F22DF921B0014109D /* XMLSingleElementEncodingContainer.swift */,
+				B54B122F22DF921B0014109D /* XMLChoiceEncodingContainer.swift */,
 				OBJ_20 /* XMLReferencingEncoder.swift */,
 				OBJ_21 /* XMLUnkeyedEncodingContainer.swift */,
 			);
@@ -422,6 +424,7 @@
 				1482D5A122DD2D9400AE2D6E /* SimpleChoiceTests.swift */,
 				1482D5A322DD2F4D00AE2D6E /* CompositeChoiceTests.swift */,
 				1482D5A922DD961E00AE2D6E /* NestedChoiceTests.swift */,
+				B50E7B4022E78FE1009D37E4 /* NestedAttributeChoiceTests.swift */,
 				OBJ_28 /* BooksTest.swift */,
 				D1B6A2C02297EF5A005B8A6E /* BorderTest.swift */,
 				OBJ_29 /* BreakfastTest.swift */,
@@ -652,7 +655,7 @@
 				BF9457A921CBB498005ACFDE /* KeyedBox.swift in Sources */,
 				BF9457D721CBB59E005ACFDE /* IntBox.swift in Sources */,
 				BF9457AD21CBB498005ACFDE /* BoolBox.swift in Sources */,
-				B54B123022DF921B0014109D /* XMLSingleElementEncodingContainer.swift in Sources */,
+				B54B123022DF921B0014109D /* XMLChoiceEncodingContainer.swift in Sources */,
 				BF9457B821CBB4DB005ACFDE /* String+Extensions.swift in Sources */,
 				BF9457AE21CBB498005ACFDE /* Box.swift in Sources */,
 				BF9457DA21CBB5D2005ACFDE /* DataBox.swift in Sources */,
@@ -684,6 +687,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				B50E7B4122E78FE1009D37E4 /* NestedAttributeChoiceTests.swift in Sources */,
 				BF9457CB21CBB516005ACFDE /* DecimalBoxTests.swift in Sources */,
 				BF9457F221CBB6BC005ACFDE /* UnkeyedTests.swift in Sources */,
 				A61FE03C21E4EAB10015D993 /* KeyedIntTests.swift in Sources */,
