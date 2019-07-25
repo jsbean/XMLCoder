@@ -120,7 +120,7 @@ struct XMLChoiceEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol 
         keyedBy _: NestedKey.Type,
         forKey key: Key
         ) -> KeyedEncodingContainer<NestedKey> {
-        if NestedKey.self is XMLChoiceKey.Type {
+        if NestedKey.self is XMLChoiceCodingKey.Type {
             return nestedChoiceContainer(keyedBy: NestedKey.self, forKey: key)
         } else {
             return nestedKeyedContainer(keyedBy: NestedKey.self, forKey: key)

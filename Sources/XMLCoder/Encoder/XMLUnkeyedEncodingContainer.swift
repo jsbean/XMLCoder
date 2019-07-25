@@ -66,7 +66,7 @@ struct XMLUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     public mutating func nestedContainer<NestedKey>(
         keyedBy _: NestedKey.Type
         ) -> KeyedEncodingContainer<NestedKey> {
-        if NestedKey.self is XMLChoiceKey.Type {
+        if NestedKey.self is XMLChoiceCodingKey.Type {
             return nestedChoiceContainer(keyedBy: NestedKey.self)
         } else {
             return nestedKeyedContainer(keyedBy: NestedKey.self)

@@ -64,7 +64,7 @@ class XMLEncoderImplementation: Encoder {
     // MARK: - Encoder Methods
     
     public func container<Key>(keyedBy _: Key.Type) -> KeyedEncodingContainer<Key> {
-        if Key.self is XMLChoiceKey.Type {
+        if Key.self is XMLChoiceCodingKey.Type {
             return choiceContainer(keyedBy: Key.self)
         } else {
             return keyedContainer(keyedBy: Key.self)
