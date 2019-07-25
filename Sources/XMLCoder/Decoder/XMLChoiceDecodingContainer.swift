@@ -84,83 +84,10 @@ struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol 
 
     public func decode<T: Decodable>(_ type: T.Type, forKey key: Key) throws -> T {
         guard container.withShared({ $0.key == key.stringValue }), key is XMLChoiceCodingKey else {
-            throw DecodingError.typeMismatch(
-                at: codingPath,
-                expectation: type,
-                reality: container
-            )
+            throw DecodingError.typeMismatch(at: codingPath, expectation: type, reality: container)
         }
-        return try decodeConcrete(type, forKey: key)
-    }
-
-    public func nestedContainer<NestedKey>(
-        keyedBy _: NestedKey.Type, forKey key: Key
-    ) throws -> KeyedDecodingContainer<NestedKey> {
-        fatalError("Choice elements cannot produce a nested container.")
-    }
-
-    public func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
-        fatalError("Choice elements cannot produce a unkeyed nested container.")
-    }
-
-    public func superDecoder() throws -> Decoder {
-        return try _superDecoder(forKey: XMLKey.super)
-    }
-
-    public func superDecoder(forKey key: Key) throws -> Decoder {
-        return try _superDecoder(forKey: key)
-    }
-}
-
-/// Private functions
-extension XMLChoiceDecodingContainer {
-    private func _errorDescription(of key: CodingKey) -> String {
-        switch decoder.options.keyDecodingStrategy {
-        case .convertFromSnakeCase:
-            // In this case we can attempt to recover the original value by
-            // reversing the transform
-            let original = key.stringValue
-            let converted = XMLEncoder.KeyEncodingStrategy
-                ._convertToSnakeCase(original)
-            if converted == original {
-                return "\(key) (\"\(original)\")"
-            } else {
-                return "\(key) (\"\(original)\"), converted to \(converted)"
-            }
-        default:
-            // Otherwise, just report the converted string
-            return "\(key) (\"\(key.stringValue)\")"
-        }
-    }
-
-    private func decodeSignedInteger<T>(_ type: T.Type,
-                                        forKey key: Key) throws -> T
-        where T: BinaryInteger & SignedInteger & Decodable {
-            return try decodeConcrete(type, forKey: key)
-    }
-
-    private func decodeUnsignedInteger<T>(_ type: T.Type,
-                                          forKey key: Key) throws -> T
-        where T: BinaryInteger & UnsignedInteger & Decodable {
-            return try decodeConcrete(type, forKey: key)
-    }
-
-    private func decodeFloatingPoint<T>(_ type: T.Type,
-                                        forKey key: Key) throws -> T
-        where T: BinaryFloatingPoint & Decodable {
-            return try decodeConcrete(type, forKey: key)
-    }
-
-    private func decodeConcrete<T: Decodable>(
-        _ type: T.Type,
-        forKey key: Key
-    ) throws -> T {
         guard let strategy = self.decoder.nodeDecodings.last else {
-            preconditionFailure(
-                """
-                Attempt to access node decoding strategy from empty stack.
-                """
-            )
+            preconditionFailure("Attempt to access node decoding strategy from empty stack.")
         }
         decoder.codingPath.append(key)
         let nodeDecodings = decoder.options.nodeDecodingStrategy.nodeDecodings(
@@ -175,15 +102,21 @@ extension XMLChoiceDecodingContainer {
         return try decoder.unbox(container.withShared { $0.element })
     }
 
-    private func _superDecoder(forKey key: CodingKey) throws -> Decoder {
-        decoder.codingPath.append(key)
-        defer { decoder.codingPath.removeLast() }
-        let box: Box = container.withShared { $0.element }
-        return XMLDecoderImplementation(
-            referencing: box,
-            options: decoder.options,
-            nodeDecodings: decoder.nodeDecodings,
-            codingPath: decoder.codingPath
-        )
+    public func nestedContainer<NestedKey>(
+        keyedBy _: NestedKey.Type, forKey key: Key
+    ) throws -> KeyedDecodingContainer<NestedKey> {
+        fatalError("Choice elements cannot produce a nested container.")
+    }
+
+    public func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
+        fatalError("Choice elements cannot produce a unkeyed nested container.")
+    }
+
+    public func superDecoder() throws -> Decoder {
+        fatalError("XMLChoiceDecodingContainer cannot produce a super decoder.")
+    }
+
+    public func superDecoder(forKey key: Key) throws -> Decoder {
+        fatalError("XMLChoiceDecodingContainer cannot produce a super decoder.")
     }
 }
