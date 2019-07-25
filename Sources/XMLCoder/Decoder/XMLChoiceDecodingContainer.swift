@@ -104,11 +104,11 @@ struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol 
     }
 
     public func superDecoder() throws -> Decoder {
-        return try _superDecoder(forKey: XMLKey.super)
+        fatalError("XMLChoiceDecodingContainer cannot produce a super decoder.")
     }
 
     public func superDecoder(forKey key: Key) throws -> Decoder {
-        return try _superDecoder(forKey: key)
+        fatalError("XMLChoiceDecodingContainer cannot produce a super decoder.")
     }
 }
 
@@ -137,17 +137,5 @@ extension XMLChoiceDecodingContainer {
             decoder.codingPath.removeLast()
         }
         return try decoder.unbox(container.withShared { $0.element })
-    }
-
-    private func _superDecoder(forKey key: CodingKey) throws -> Decoder {
-        decoder.codingPath.append(key)
-        defer { decoder.codingPath.removeLast() }
-        let box: Box = container.withShared { $0.element }
-        return XMLDecoderImplementation(
-            referencing: box,
-            options: decoder.options,
-            nodeDecodings: decoder.nodeDecodings,
-            codingPath: decoder.codingPath
-        )
     }
 }
