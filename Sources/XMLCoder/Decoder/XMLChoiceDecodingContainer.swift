@@ -90,35 +90,6 @@ struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol 
                 reality: container
             )
         }
-        return try decodeConcrete(type, forKey: key)
-    }
-
-    public func nestedContainer<NestedKey>(
-        keyedBy _: NestedKey.Type, forKey key: Key
-    ) throws -> KeyedDecodingContainer<NestedKey> {
-        fatalError("Choice elements cannot produce a nested container.")
-    }
-
-    public func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
-        fatalError("Choice elements cannot produce a unkeyed nested container.")
-    }
-
-    public func superDecoder() throws -> Decoder {
-        fatalError("XMLChoiceDecodingContainer cannot produce a super decoder.")
-    }
-
-    public func superDecoder(forKey key: Key) throws -> Decoder {
-        fatalError("XMLChoiceDecodingContainer cannot produce a super decoder.")
-    }
-}
-
-/// Private functions
-extension XMLChoiceDecodingContainer {
-
-    private func decodeConcrete<T: Decodable>(
-        _ type: T.Type,
-        forKey key: Key
-    ) throws -> T {
         guard let strategy = self.decoder.nodeDecodings.last else {
             preconditionFailure(
                 """
@@ -137,5 +108,23 @@ extension XMLChoiceDecodingContainer {
             decoder.codingPath.removeLast()
         }
         return try decoder.unbox(container.withShared { $0.element })
+    }
+
+    public func nestedContainer<NestedKey>(
+        keyedBy _: NestedKey.Type, forKey key: Key
+    ) throws -> KeyedDecodingContainer<NestedKey> {
+        fatalError("Choice elements cannot produce a nested container.")
+    }
+
+    public func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
+        fatalError("Choice elements cannot produce a unkeyed nested container.")
+    }
+
+    public func superDecoder() throws -> Decoder {
+        fatalError("XMLChoiceDecodingContainer cannot produce a super decoder.")
+    }
+
+    public func superDecoder(forKey key: Key) throws -> Decoder {
+        fatalError("XMLChoiceDecodingContainer cannot produce a super decoder.")
     }
 }
