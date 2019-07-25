@@ -114,42 +114,6 @@ struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol 
 
 /// Private functions
 extension XMLChoiceDecodingContainer {
-    private func _errorDescription(of key: CodingKey) -> String {
-        switch decoder.options.keyDecodingStrategy {
-        case .convertFromSnakeCase:
-            // In this case we can attempt to recover the original value by
-            // reversing the transform
-            let original = key.stringValue
-            let converted = XMLEncoder.KeyEncodingStrategy
-                ._convertToSnakeCase(original)
-            if converted == original {
-                return "\(key) (\"\(original)\")"
-            } else {
-                return "\(key) (\"\(original)\"), converted to \(converted)"
-            }
-        default:
-            // Otherwise, just report the converted string
-            return "\(key) (\"\(key.stringValue)\")"
-        }
-    }
-
-    private func decodeSignedInteger<T>(_ type: T.Type,
-                                        forKey key: Key) throws -> T
-        where T: BinaryInteger & SignedInteger & Decodable {
-            return try decodeConcrete(type, forKey: key)
-    }
-
-    private func decodeUnsignedInteger<T>(_ type: T.Type,
-                                          forKey key: Key) throws -> T
-        where T: BinaryInteger & UnsignedInteger & Decodable {
-            return try decodeConcrete(type, forKey: key)
-    }
-
-    private func decodeFloatingPoint<T>(_ type: T.Type,
-                                        forKey key: Key) throws -> T
-        where T: BinaryFloatingPoint & Decodable {
-            return try decodeConcrete(type, forKey: key)
-    }
 
     private func decodeConcrete<T: Decodable>(
         _ type: T.Type,
