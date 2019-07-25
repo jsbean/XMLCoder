@@ -83,7 +83,7 @@ struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol 
     }
 
     public func decode<T: Decodable>(_ type: T.Type, forKey key: Key) throws -> T {
-        guard container.withShared({ $0.key == key.stringValue }), key is XMLChoiceKey else {
+        guard container.withShared({ $0.key == key.stringValue }), key is XMLChoiceCodingKey else {
             throw DecodingError.typeMismatch(at: codingPath, expectation: type, reality: container)
         }
         guard let strategy = self.decoder.nodeDecodings.last else {
