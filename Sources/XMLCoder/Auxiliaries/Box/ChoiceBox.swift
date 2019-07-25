@@ -31,7 +31,7 @@ extension ChoiceBox {
         self.init(key: firstKey, element: firstElement)
     }
 
-    init(_ singleElementBox: SingleElementBox) {
+    init(_ singleElementBox: SingleKeyedBox) {
         self.init(key: singleElementBox.key, element: singleElementBox.element)
     }
 }

@@ -23,7 +23,7 @@
 /* Begin PBXBuildFile section */
 		1482D5A222DD2D9400AE2D6E /* SimpleChoiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1482D5A122DD2D9400AE2D6E /* SimpleChoiceTests.swift */; };
 		1482D5A422DD2F4D00AE2D6E /* CompositeChoiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1482D5A322DD2F4D00AE2D6E /* CompositeChoiceTests.swift */; };
-		1482D5A822DD6AEE00AE2D6E /* SingleElementBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1482D5A722DD6AED00AE2D6E /* SingleElementBox.swift */; };
+		1482D5A822DD6AEE00AE2D6E /* SingleKeyedBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1482D5A722DD6AED00AE2D6E /* SingleKeyedBox.swift */; };
 		1482D5AA22DD961E00AE2D6E /* NestedChoiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1482D5A922DD961E00AE2D6E /* NestedChoiceTests.swift */; };
 		14AD38AF22E1218D008BF810 /* XMLChoiceDecodingContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14AD38AE22E1218D008BF810 /* XMLChoiceDecodingContainer.swift */; };
 		14AD38B122E16A8A008BF810 /* ChoiceBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14AD38B022E16A8A008BF810 /* ChoiceBox.swift */; };
@@ -154,7 +154,7 @@
 /* Begin PBXFileReference section */
 		1482D5A122DD2D9400AE2D6E /* SimpleChoiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleChoiceTests.swift; sourceTree = "<group>"; };
 		1482D5A322DD2F4D00AE2D6E /* CompositeChoiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositeChoiceTests.swift; sourceTree = "<group>"; };
-		1482D5A722DD6AED00AE2D6E /* SingleElementBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleElementBox.swift; sourceTree = "<group>"; };
+		1482D5A722DD6AED00AE2D6E /* SingleKeyedBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleKeyedBox.swift; sourceTree = "<group>"; };
 		1482D5A922DD961E00AE2D6E /* NestedChoiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedChoiceTests.swift; sourceTree = "<group>"; };
 		14AD38AE22E1218D008BF810 /* XMLChoiceDecodingContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLChoiceDecodingContainer.swift; sourceTree = "<group>"; };
 		14AD38B022E16A8A008BF810 /* ChoiceBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoiceBox.swift; sourceTree = "<group>"; };
@@ -318,7 +318,7 @@
 				BF9457A021CBB497005ACFDE /* UnkeyedBox.swift */,
 				BF94579F21CBB497005ACFDE /* KeyedBox.swift */,
 				BF63EF1721CEB6BD001D38C5 /* SharedBox.swift */,
-				1482D5A722DD6AED00AE2D6E /* SingleElementBox.swift */,
+				1482D5A722DD6AED00AE2D6E /* SingleKeyedBox.swift */,
 				14AD38B022E16A8A008BF810 /* ChoiceBox.swift */,
 			);
 			path = Box;
@@ -656,7 +656,7 @@
 				BF9457AE21CBB498005ACFDE /* Box.swift in Sources */,
 				BF9457DA21CBB5D2005ACFDE /* DataBox.swift in Sources */,
 				BF9457AB21CBB498005ACFDE /* DecimalBox.swift in Sources */,
-				1482D5A822DD6AEE00AE2D6E /* SingleElementBox.swift in Sources */,
+				1482D5A822DD6AEE00AE2D6E /* SingleKeyedBox.swift in Sources */,
 				OBJ_56 /* XMLKeyedEncodingContainer.swift in Sources */,
 				14AD38B122E16A8A008BF810 /* ChoiceBox.swift in Sources */,
 				D158F12F2229892C0032B449 /* DynamicNodeDecoding.swift in Sources */,

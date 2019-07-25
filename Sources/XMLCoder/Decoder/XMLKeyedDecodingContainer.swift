@@ -110,7 +110,7 @@ struct XMLKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol {
             return keyedBox.elements[key.stringValue].map {
                 if let choice = $0 as? ChoiceBox {
                     return choice.element
-                } else if let singleElement = $0 as? SingleElementBox {
+                } else if let singleElement = $0 as? SingleKeyedBox {
                     return singleElement.element
                 } else {
                     return $0
@@ -280,7 +280,7 @@ extension XMLKeyedDecodingContainer {
                         return value.map {
                             if let choice = $0 as? ChoiceBox {
                                 return choice.element
-                            } else if let singleElement = $0 as? SingleElementBox {
+                            } else if let singleElement = $0 as? SingleKeyedBox {
                                 return singleElement.element
                             } else {
                                 return $0
@@ -295,7 +295,7 @@ extension XMLKeyedDecodingContainer {
                     return keyedBox.elements[key.stringValue].map {
                         if let choice = $0 as? ChoiceBox {
                             return choice.element
-                        } else if let singleElement = $0 as? SingleElementBox {
+                        } else if let singleElement = $0 as? SingleKeyedBox {
                             return singleElement.element
                         } else {
                             return $0
