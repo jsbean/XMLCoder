@@ -39,7 +39,7 @@
 		B3BE1D682202CBF800259831 /* XMLDecoderImplementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BE1D662202CBF800259831 /* XMLDecoderImplementation.swift */; };
 		B3BE1D692202CBF800259831 /* SingleValueDecodingContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BE1D672202CBF800259831 /* SingleValueDecodingContainer.swift */; };
 		B50E7B4122E78FE1009D37E4 /* NestedAttributeChoiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50E7B4022E78FE1009D37E4 /* NestedAttributeChoiceTests.swift */; };
-		B54B122E22DF916F0014109D /* XMLChoiceKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54B122D22DF916F0014109D /* XMLChoiceKey.swift */; };
+		B54B122E22DF916F0014109D /* XMLChoiceCodingKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54B122D22DF916F0014109D /* XMLChoiceCodingKey.swift */; };
 		B54B123022DF921B0014109D /* XMLChoiceEncodingContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54B122F22DF921B0014109D /* XMLChoiceEncodingContainer.swift */; };
 		BF63EF0021CCDED2001D38C5 /* XMLStackParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF63EEFF21CCDED2001D38C5 /* XMLStackParserTests.swift */; };
 		BF63EF0621CD7A74001D38C5 /* URLBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF63EF0521CD7A74001D38C5 /* URLBox.swift */; };
@@ -170,7 +170,7 @@
 		B3BE1D662202CBF800259831 /* XMLDecoderImplementation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLDecoderImplementation.swift; sourceTree = "<group>"; };
 		B3BE1D672202CBF800259831 /* SingleValueDecodingContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleValueDecodingContainer.swift; sourceTree = "<group>"; };
 		B50E7B4022E78FE1009D37E4 /* NestedAttributeChoiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedAttributeChoiceTests.swift; sourceTree = "<group>"; };
-		B54B122D22DF916F0014109D /* XMLChoiceKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLChoiceKey.swift; sourceTree = "<group>"; };
+		B54B122D22DF916F0014109D /* XMLChoiceCodingKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLChoiceCodingKey.swift; sourceTree = "<group>"; };
 		B54B122F22DF921B0014109D /* XMLChoiceEncodingContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLChoiceEncodingContainer.swift; sourceTree = "<group>"; };
 		BF63EEFF21CCDED2001D38C5 /* XMLStackParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLStackParserTests.swift; sourceTree = "<group>"; };
 		BF63EF0521CD7A74001D38C5 /* URLBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBox.swift; sourceTree = "<group>"; };
@@ -336,7 +336,7 @@
 				BF9457B121CBB4DB005ACFDE /* XMLHeader.swift */,
 				BF9457B321CBB4DB005ACFDE /* XMLStackParser.swift */,
 				BF9457B521CBB4DB005ACFDE /* XMLKey.swift */,
-				B54B122D22DF916F0014109D /* XMLChoiceKey.swift */,
+				B54B122D22DF916F0014109D /* XMLChoiceCodingKey.swift */,
 			);
 			path = Auxiliaries;
 			sourceTree = "<group>";
@@ -641,7 +641,7 @@
 				D1EC3E65225A38EC00C610E3 /* KeyedStorage.swift in Sources */,
 				OBJ_51 /* XMLKeyedDecodingContainer.swift in Sources */,
 				OBJ_52 /* XMLUnkeyedDecodingContainer.swift in Sources */,
-				B54B122E22DF916F0014109D /* XMLChoiceKey.swift in Sources */,
+				B54B122E22DF916F0014109D /* XMLChoiceCodingKey.swift in Sources */,
 				OBJ_53 /* EncodingErrorExtension.swift in Sources */,
 				BF9457B921CBB4DB005ACFDE /* XMLStackParser.swift in Sources */,
 				OBJ_54 /* XMLEncoder.swift in Sources */,
