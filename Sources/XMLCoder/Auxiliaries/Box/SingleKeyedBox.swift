@@ -27,11 +27,3 @@ extension SingleKeyedBox: Box {
         return nil
     }
 }
-
-extension SingleKeyedBox {
-    init?(_ keyedBox: KeyedBox) {
-        guard let firstKey = keyedBox.elements.keys.first else { return nil }
-        let firstElement = keyedBox.elements[firstKey]
-        self.init(attributes: keyedBox.attributes, key: firstKey, element: firstElement)
-    }
-}
