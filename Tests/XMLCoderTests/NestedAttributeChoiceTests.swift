@@ -66,7 +66,7 @@ extension Paragraph: Codable {
 }
 
 extension Entry: Codable {
-    private enum CodingKeys: String, XMLChoiceKey {
+    private enum CodingKeys: String, XMLChoiceCodingKey {
         case run, properties, br
     }
     public init(from decoder: Decoder) throws {
