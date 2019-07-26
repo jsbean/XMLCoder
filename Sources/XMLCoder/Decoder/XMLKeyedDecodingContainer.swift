@@ -34,14 +34,11 @@ struct XMLKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol {
         wrapping container: KeyedContainer
     ) {
         self.decoder = decoder
-        self.container = container.withShared { keyedBox in
-            return SharedBox(
-                KeyedBox(
-                    elements: keyedBox.elements.map { (decoder.keyTransform($0), $1) },
-                    attributes: keyedBox.attributes.map { (decoder.keyTransform($0), $1) }
-                )
-            )
+        container.withShared {
+            $0.elements = .init($0.elements.map { (decoder.keyTransform($0), $1) })
+            $0.attributes = .init($0.attributes.map { (decoder.keyTransform($0), $1) })
         }
+        self.container = container
         codingPath = decoder.codingPath
     }
 
