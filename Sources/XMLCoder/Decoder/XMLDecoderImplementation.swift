@@ -476,14 +476,14 @@ extension XMLDecoderImplementation {
     ) -> Container {
         let keyTransform: (String) -> String
         switch options.keyDecodingStrategy {
-        case .useDefaultKeys:
-            keyTransform = { key in key }
         case .convertFromSnakeCase:
             keyTransform = XMLDecoder.KeyDecodingStrategy._convertFromSnakeCase
         case .convertFromCapitalized:
             keyTransform = XMLDecoder.KeyDecodingStrategy._convertFromCapitalized
         case .convertFromKebabCase:
             keyTransform = XMLDecoder.KeyDecodingStrategy._convertFromKebabCase
+        case .useDefaultKeys:
+            keyTransform = { key in key }
         case let .custom(converter):
             keyTransform = { key in
                 converter(self.codingPath + [XMLKey(stringValue: key, intValue: nil)]).stringValue
