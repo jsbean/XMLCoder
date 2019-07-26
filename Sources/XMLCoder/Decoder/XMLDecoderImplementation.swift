@@ -185,7 +185,7 @@ class XMLDecoderImplementation: Decoder {
                 referencing: self,
                 wrapping: SharedBox(
                     keyed.withShared { $0.elements.map { key, box in
-                        SingleKeyedBox(attributes: .init(), key: key, element: box)
+                        SingleKeyedBox(key: key, element: box)
                     }
                 }
                 )
