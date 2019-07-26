@@ -47,18 +47,6 @@ extension IntOrStringWrapper: Codable {
     }
 }
 
-extension IntOrStringWrapper: Encodable {
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        switch self {
-        case let .int(value):
-            try container.encode(value, forKey: .int)
-        case let .string(value):
-            try container.encode(value, forKey: .string)
-        }
-    }
-}
-
 class EnumAssociatedValueTestComposite: XCTestCase {
     var encoder: XMLEncoder {
         let encoder = XMLEncoder()
