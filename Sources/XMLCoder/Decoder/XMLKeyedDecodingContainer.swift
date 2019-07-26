@@ -105,17 +105,8 @@ struct XMLKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol {
     }
 
     public func decodeNil(forKey key: Key) throws -> Bool {
-        //        FIXME: DRY out
-        let elements = container.withShared { keyedBox -> [Box] in
-            return keyedBox.elements[key.stringValue].map {
-                if let choice = $0 as? ChoiceBox {
-                    return choice.element
-                } else if let singleKeyed = $0 as? SingleKeyedBox {
-                    return singleKeyed.element
-                } else {
-                    return $0
-                }
-            }
+        let elements = container.withShared { keyedBox in
+            return keyedBox.elements[key.stringValue].map { $0.singleKeyedElementOrSelf() }
         }
 
         let attributes = container.withShared { keyedBox in
@@ -277,30 +268,14 @@ extension XMLKeyedDecodingContainer {
                     let keyString = key.stringValue.isEmpty ? "value" : key.stringValue
                     let value = keyedBox.elements[keyString]
                     if !value.isEmpty {
-                        return value.map {
-                            if let choice = $0 as? ChoiceBox {
-                                return choice.element
-                            } else if let singleKeyed = $0 as? SingleKeyedBox {
-                                return singleKeyed.element
-                            } else {
-                                return $0
-                            }
-                        }
+                        return value.map { $0.singleKeyedElementOrSelf() }
                     } else if let value = keyedBox.value {
                         return [value]
                     } else {
                         return []
                     }
                 } else {
-                    return keyedBox.elements[key.stringValue].map {
-                        if let choice = $0 as? ChoiceBox {
-                            return choice.element
-                        } else if let singleKeyed = $0 as? SingleKeyedBox {
-                            return singleKeyed.element
-                        } else {
-                            return $0
-                        }
-                    }
+                    return keyedBox.elements[key.stringValue].map { $0.singleKeyedElementOrSelf() }
                 }
             }
 
@@ -402,5 +377,18 @@ extension XMLKeyedDecodingContainer {
             nodeDecodings: decoder.nodeDecodings,
             codingPath: decoder.codingPath
         )
+    }
+}
+
+extension Box {
+    func singleKeyedElementOrSelf() -> Box {
+        switch self {
+        case let choice as ChoiceBox:
+            return choice.element
+        case let singleKeyed as SingleKeyedBox:
+            return singleKeyed.element
+        default:
+            return self
+        }
     }
 }
