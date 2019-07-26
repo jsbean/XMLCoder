@@ -25,11 +25,11 @@ struct XMLChoiceDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol 
     /// Initializes `self` by referencing the given decoder and container.
     init(referencing decoder: XMLDecoderImplementation, wrapping container: SharedBox<ChoiceBox>) {
         self.decoder = decoder
-        self.container = decoder.transformKeyedContainer { keyTransform in
+        self.container = container.withShared { choiceBox in
             return SharedBox(
                 ChoiceBox(
-                    key: keyTransform(container.withShared { $0.key }),
-                    element: container.withShared { $0.element }
+                    key: decoder.keyTransform(choiceBox.key),
+                    element: choiceBox.element
                 )
             )
         }

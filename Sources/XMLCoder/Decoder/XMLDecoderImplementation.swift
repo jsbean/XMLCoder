@@ -471,24 +471,20 @@ extension XMLDecoderImplementation {
 }
 
 extension XMLDecoderImplementation {
-    func transformKeyedContainer <Container> (
-        _ transform: ((String) -> String) -> Container
-    ) -> Container {
-        let keyTransform: (String) -> String
+    var keyTransform: (String) -> String {
         switch options.keyDecodingStrategy {
         case .convertFromSnakeCase:
-            keyTransform = XMLDecoder.KeyDecodingStrategy._convertFromSnakeCase
+            return XMLDecoder.KeyDecodingStrategy._convertFromSnakeCase
         case .convertFromCapitalized:
-            keyTransform = XMLDecoder.KeyDecodingStrategy._convertFromCapitalized
+            return XMLDecoder.KeyDecodingStrategy._convertFromCapitalized
         case .convertFromKebabCase:
-            keyTransform = XMLDecoder.KeyDecodingStrategy._convertFromKebabCase
+            return XMLDecoder.KeyDecodingStrategy._convertFromKebabCase
         case .useDefaultKeys:
-            keyTransform = { key in key }
+            return { key in key }
         case let .custom(converter):
-            keyTransform = { key in
+            return { key in
                 converter(self.codingPath + [XMLKey(stringValue: key, intValue: nil)]).stringValue
             }
         }
-        return transform(keyTransform)
     }
 }
